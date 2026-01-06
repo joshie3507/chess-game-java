@@ -1,6 +1,6 @@
 package Chess;
 
-import Chess.Board.GamePanel;
+import Chess.Game.GamePanel;
 
 import javax.swing.*;
 

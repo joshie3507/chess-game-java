@@ -1,4 +1,7 @@
-package Chess.Board;
+package Chess.Game;
+
+import Chess.Board.TileManager;
+import Chess.Piece.WhitePieceManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,9 +12,13 @@ public class GamePanel extends JPanel implements Runnable{
     public final int numTiles = 10;
     public final int tileSize = screenSize / numTiles;
 
+
     int FPS = 20;
 
     Thread gameThread;
+
+    public TileManager tileM = new TileManager(this);
+    WhitePieceManager whitePieceManager = new WhitePieceManager(this);
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenSize, screenSize));
@@ -60,15 +67,11 @@ public class GamePanel extends JPanel implements Runnable{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.WHITE);
+        Graphics2D g2 = (Graphics2D) g;
 
-        for (int i = 0; i < numTiles; i++){
-            for (int j = 0; j < numTiles; j++){
-                if ((j + i) % 2 == 0){
-                    g.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
-                }
-            }
-        }
+        tileM.drawTiles(g2);
+
+        whitePieceManager.drawWhitePieces(g2);
 
 
     }
