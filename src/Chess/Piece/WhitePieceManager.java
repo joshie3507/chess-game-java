@@ -12,8 +12,12 @@ public class WhitePieceManager {
             numKnights = 2,
             numBishops = 2;
 
-    private Pawn[] pawnArray = new Pawn[numPawns];
-
+    private final Pawn[] pawnArray = new Pawn[numPawns];
+    private final Rook[] rookArray = new Rook[numRooks];
+    private final Knight[] knightArray = new Knight[numKnights];
+    private final Bishop[] bishopArray = new Bishop[numBishops];
+    private King king;
+    private Queen queen;
 
 
     public WhitePieceManager(GamePanel gp){
@@ -23,6 +27,30 @@ public class WhitePieceManager {
 
     private void initialisePieces(){
         initialisePawns();
+        initialiseRooks();
+        initialiseKnights();
+        initialiseBishops();
+        initialiseRoyals();
+    }
+
+    private void initialiseRoyals() {
+        king = new King(gp, true, 4, 1);
+        queen = new Queen(gp, true, 3, 1);
+    }
+
+    private void initialiseBishops() {
+        bishopArray[0] = new Bishop(gp, true, 2, 1);
+        bishopArray[1] = new Bishop(gp, true, 5, 1);
+    }
+
+    private void initialiseKnights() {
+        knightArray[0] = new Knight(gp, true, 1, 1);
+        knightArray[1] = new Knight(gp, true, 6, 1);
+    }
+
+    private void initialiseRooks() {
+        rookArray[0] = new Rook(gp, true, 0, 1);
+        rookArray[1] = new Rook(gp, true, 7, 1);
     }
 
     private void initialisePawns(){
@@ -35,5 +63,17 @@ public class WhitePieceManager {
         for (Pawn pawn : pawnArray){
             pawn.draw(g2);
         }
+        for (Rook rook : rookArray){
+            rook.draw(g2);
+        }
+        for (Knight knight : knightArray){
+            knight.draw(g2);
+        }
+        for (Bishop bishop : bishopArray){
+            bishop.draw(g2);
+        }
+        king.draw(g2);
+        queen.draw(g2);
+
     }
 }

@@ -1,6 +1,7 @@
 package Chess.Game;
 
 import Chess.Board.TileManager;
+import Chess.Piece.BlackPieceManager;
 import Chess.Piece.WhitePieceManager;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable{
 
     public final int screenSize = 800;
-    public final int numTiles = 10;
+    public final int numTiles = 8;
     public final int tileSize = screenSize / numTiles;
 
 
@@ -19,6 +20,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     public TileManager tileM = new TileManager(this);
     WhitePieceManager whitePieceManager = new WhitePieceManager(this);
+    BlackPieceManager blackPieceManager = new BlackPieceManager(this);
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenSize, screenSize));
@@ -72,6 +74,7 @@ public class GamePanel extends JPanel implements Runnable{
         tileM.drawTiles(g2);
 
         whitePieceManager.drawWhitePieces(g2);
+        blackPieceManager.drawBlackPieces(g2);
 
 
     }

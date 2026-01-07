@@ -20,7 +20,7 @@ public class TileManager {
 
         for (int row = 0; row < gp.numTiles; row++){
             for (int column = 0; column < gp.numTiles; column++){
-                String colour = (row + column) % 2 == 0 ? "#FFFFFF" : "#000000";
+                String colour = (row + column) % 2 == 0 ? "#e4d9c8" : "#5e5247";
                 tiles[row][column] = new Tile(tileNum, colour);
 
                 tileNum++;
