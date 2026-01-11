@@ -2,6 +2,7 @@ package Chess.Game;
 
 import Chess.Board.TileManager;
 import Chess.Piece.BlackPieceManager;
+import Chess.Piece.*;
 import Chess.Piece.WhitePieceManager;
 
 import javax.swing.*;
@@ -12,7 +13,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenSize = 800;
     public final int numTiles = 8;
     public final int tileSize = screenSize / numTiles;
-
+    public int[] tileClicked = new int[] {-1, -1};
+    public Piece currentlySelected = null;
 
     int FPS = 20;
 
@@ -21,11 +23,13 @@ public class GamePanel extends JPanel implements Runnable{
     public TileManager tileM = new TileManager(this);
     WhitePieceManager whitePieceManager = new WhitePieceManager(this);
     BlackPieceManager blackPieceManager = new BlackPieceManager(this);
+    MouseHandler mouseH = new MouseHandler(this);
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenSize, screenSize));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
+        this.addMouseListener(mouseH);
     }
 
     public void startGameThread(){
@@ -63,6 +67,15 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     private void update() {
+        tileClicked = getTileClicked();
+        whitePieceManager.updatePieces();
+        blackPieceManager.updatePieces();
+    }
+
+    private int[] getTileClicked() {
+        int x = mouseH.xTileClicked;
+        int y = mouseH.yTileClicked;
+        return new int[] {x, y};
     }
 
     @Override
@@ -72,6 +85,8 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         tileM.drawTiles(g2);
+
+        tileM.highlightTiles(g2);
 
         whitePieceManager.drawWhitePieces(g2);
         blackPieceManager.drawBlackPieces(g2);

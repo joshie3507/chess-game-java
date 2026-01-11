@@ -25,6 +25,12 @@ public class WhitePieceManager {
         initialisePieces();
     }
 
+    public void updatePieces(){
+        for (Pawn pawn : pawnArray){
+            pawn.update();
+        }
+    }
+
     private void initialisePieces(){
         initialisePawns();
         initialiseRooks();

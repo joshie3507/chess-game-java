@@ -33,6 +33,12 @@ public class BlackPieceManager {
         initialiseRoyals();
     }
 
+    public void updatePieces(){
+        for (Pawn pawn : pawnArray){
+            pawn.update();
+        }
+    }
+
     private void initialiseRoyals() {
         king = new King(gp, false, 4, 8);
         queen = new Queen(gp, false, 3, 8);

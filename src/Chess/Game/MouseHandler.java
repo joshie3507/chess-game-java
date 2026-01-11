@@ -5,14 +5,26 @@ import java.awt.event.MouseListener;
 
 public class MouseHandler implements MouseListener {
 
+    GamePanel gp;
+
+    MouseHandler(GamePanel gp){
+        this.gp = gp;
+    }
+
+    public int xTileClicked, yTileClicked;
+    private int xClicked, yClicked;
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println(e.getX() + " " + e.getY());
+        xClicked = e.getX();
+        yClicked = e.getY();
+
+        xTileClicked = xClicked / gp.tileSize;
+        yTileClicked = 8 - (yClicked / gp.tileSize);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
     }
 
     @Override

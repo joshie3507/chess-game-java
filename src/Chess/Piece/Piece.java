@@ -9,6 +9,7 @@ public class Piece {
     public int tileX, tileY;
 
     public int upMoves, sideMoves;
-    public boolean clickedOn = false;
+    public int[][] availableMoves;
+    public boolean selected = false;
     public boolean isAlive = true;
 }

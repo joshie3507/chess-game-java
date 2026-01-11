@@ -5,10 +5,18 @@ import Chess.Game.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Pawn extends Piece{
 
     GamePanel gp;
+    //public int[][] availableMoves;
+    boolean isFirstMove = true;
+
+    private int[][] getAvailableMoves() {
+        if (isWhite) return isFirstMove ? new int[][]{{tileX, tileY + 1}, {tileX, tileY + 2}} : new int[][]{{tileX, tileY + 1}};
+        return isFirstMove ? new int[][] {{tileX, tileY-1}, {tileX, tileY - 2}} : new int[][]{{tileX, tileY - 1}};
+    }
 
     public Pawn(GamePanel gp, boolean isWhite, int tileX, int tileY){
         this.gp = gp;
@@ -19,6 +27,7 @@ public class Pawn extends Piece{
         this.tileY = tileY;
 
         getImage();
+        availableMoves = getAvailableMoves();
     }
 
     private void getImage()  {
@@ -34,14 +43,23 @@ public class Pawn extends Piece{
     }
 
     public void move(){
-        tileY+=upMoves;
-        if (upMoves == 2){
-            upMoves--;
-        }
     }
 
     public void draw(Graphics2D g2){
         g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+    }
+
+    public void update(){
+        selected = checkClickedOn();
+
+        if (selected){
+            gp.currentlySelected = this;
+            System.out.println(tileX + " " + tileY + " | " + Arrays.toString(availableMoves[0]));
+        }
+    }
+
+    private boolean checkClickedOn() {
+        return (gp.tileClicked[0] == tileX) && (gp.tileClicked[1] == tileY);
     }
 
 }
