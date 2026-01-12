@@ -13,8 +13,6 @@ public class Rook extends Piece{
 
     public Rook(GamePanel gp, boolean isWhite, int tileX, int tileY){
         this.gp = gp;
-        this.upMoves = 10;
-        this.sideMoves = 10;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;
