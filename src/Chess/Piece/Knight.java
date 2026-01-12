@@ -11,8 +11,6 @@ public class Knight extends Piece{
 
         public Knight(GamePanel gp, boolean isWhite, int tileX, int tileY){
             this.gp = gp;
-            this.upMoves = 2;
-            this.sideMoves = 1;
             this.isWhite = isWhite;
             this.tileX = tileX;
             this.tileY = tileY;

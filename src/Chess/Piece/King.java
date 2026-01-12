@@ -11,8 +11,6 @@ public class King extends Piece{
 
     public King(GamePanel gp, boolean isWhite, int tileX, int tileY){
             this.gp = gp;
-            this.upMoves = 1;
-            this.sideMoves = 1;
             this.isWhite = isWhite;
             this.tileX = tileX;
             this.tileY = tileY;

@@ -18,8 +18,6 @@ public class Pawn extends Piece{
 
     public Pawn(GamePanel gp, boolean isWhite, int tileX, int tileY){
         this.gp = gp;
-        this.upMoves = 2;
-        this.sideMoves = 0;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;

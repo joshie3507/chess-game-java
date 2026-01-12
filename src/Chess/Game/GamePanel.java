@@ -13,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenSize = 800;
     public final int numTiles = 8;
     public final int tileSize = screenSize / numTiles;
-    public int[] tileClicked = null;
+    public int[] tileClicked;
     public Piece currentlySelected = null;
     public boolean isWhitesTurn = true;
 

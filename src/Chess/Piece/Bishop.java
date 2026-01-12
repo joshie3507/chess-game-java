@@ -11,8 +11,6 @@ import java.util.Arrays;
 public class Bishop extends Piece {
     public Bishop(GamePanel gp, boolean isWhite, int tileX, int tileY) {
         this.gp = gp;
-        this.upMoves = 8;
-        this.sideMoves = 8;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;

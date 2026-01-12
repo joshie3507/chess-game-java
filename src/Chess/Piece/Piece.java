@@ -12,7 +12,6 @@ public class Piece {
 
     public int tileX, tileY;
 
-    public int upMoves, sideMoves;
     public int[][] availableMoves;
     public boolean selected = false;
     public boolean isAlive = true;
