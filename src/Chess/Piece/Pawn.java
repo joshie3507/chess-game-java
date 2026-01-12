@@ -5,25 +5,72 @@ import Chess.Game.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Pawn extends Piece{
 
     boolean isFirstMove = true;
 
-    private int[][] getAvailableMoves() {
-        if (isWhite) return isFirstMove ? new int[][]{{tileX, tileY + 1}, {tileX, tileY + 2}} : new int[][]{{tileX, tileY + 1}};
-        return isFirstMove ? new int[][] {{tileX, tileY-1}, {tileX, tileY - 2}} : new int[][]{{tileX, tileY - 1}};
+    int[][] getAvailableMoves() {
+        ArrayList<int[]> moves = new ArrayList<>();
+        int numMoves = isFirstMove ? 2 : 1;
+
+        int[] currentMove;
+
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+
+        if (isWhite) {
+            int currentY = tileY + 1, limit = tileY + numMoves;
+
+            outer:
+            while (currentY <= limit) {
+                currentMove = new int[]{tileX, currentY};
+                for (int[] location : teamPieceLocations) {
+                    if (Arrays.equals(location, currentMove)) {
+                        break outer;
+                    }
+                }
+
+                moves.add(currentMove);
+                currentY++;
+            }
+        } else {
+            int currentY = tileY - 1, limit = tileY - numMoves;
+
+            outer:
+            while (currentY >= limit) {
+                currentMove = new int[]{tileX, currentY};
+                for (int[] location : teamPieceLocations) {
+                    if (Arrays.equals(location, currentMove)) {
+                        break outer;
+                    }
+                }
+
+                moves.add(currentMove);
+                currentY--;
+            }
+        }
+
+        int[][] moveArray = new int[moves.size()][2];
+
+        for (int i = 0; i < moves.size(); i++){
+            moveArray[i][0] = moves.get(i)[0];
+            moveArray[i][1] = moves.get(i)[1];
+        }
+
+        return moveArray;
+
     }
 
-    public Pawn(GamePanel gp, boolean isWhite, int tileX, int tileY){
+    public Pawn(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber){
         this.gp = gp;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;
+        this.pieceNumber = pieceNumber;
 
         getImage();
-        availableMoves = getAvailableMoves();
     }
 
     private void getImage()  {
@@ -41,8 +88,12 @@ public class Pawn extends Piece{
     public void move(){
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
+        isFirstMove = false;
+
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
+
+        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
 
     }
 
@@ -66,5 +117,4 @@ public class Pawn extends Piece{
             }
         }
     }
-
 }

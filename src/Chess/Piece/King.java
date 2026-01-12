@@ -5,31 +5,141 @@ import Chess.Game.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class King extends Piece{
 
-    public King(GamePanel gp, boolean isWhite, int tileX, int tileY){
+    public King(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber){
             this.gp = gp;
             this.isWhite = isWhite;
             this.tileX = tileX;
             this.tileY = tileY;
+            this.pieceNumber = pieceNumber;
 
             getImage();
-            availableMoves = getAvailableMoves();
         }
 
-    private int[][] getAvailableMoves() {
-        return new int[][] {
-                {tileX + 1, tileY},
-                {tileX + 1, tileY + 1},
-                {tileX, tileY + 1},
-                {tileX - 1, tileY + 1},
-                {tileX - 1, tileY},
-                {tileX - 1, tileY - 1},
-                {tileX, tileY - 1},
-                {tileX + 1, tileY - 1}
-        };
+    int[][] getAvailableMoves() {
+        ArrayList<int[]> moves = new ArrayList<>();
+        boolean blocked = false;
+
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+
+        int[] currentMove;
+
+        currentMove = new int[] {tileX + 1, tileY};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX + 1, tileY + 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX, tileY + 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX - 1, tileY + 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX - 1, tileY};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX - 1, tileY - 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX, tileY - 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        currentMove = new int[] {tileX + 1, tileY - 1};
+        for (int[] location : teamPieceLocations){
+            if (Arrays.equals(location, currentMove)){
+                blocked = true;
+                break;
+            }
+        }
+
+        if (!blocked){
+            moves.add(currentMove);
+        }
+        blocked = false;
+
+        int[][] moveArray = new int[moves.size()][2];
+
+        for (int i = 0; i < moves.size(); i++){
+            moveArray[i][0] = moves.get(i)[0];
+            moveArray[i][1] = moves.get(i)[1];
+        }
+
+        return moveArray;
     }
 
     private void getImage()  {

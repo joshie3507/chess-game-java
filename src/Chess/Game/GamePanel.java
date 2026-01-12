@@ -7,6 +7,7 @@ import Chess.Piece.WhitePieceManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -16,6 +17,9 @@ public class GamePanel extends JPanel implements Runnable{
     public int[] tileClicked;
     public Piece currentlySelected = null;
     public boolean isWhitesTurn = true;
+
+    public ArrayList<int[]> whiteMoveList;
+    public ArrayList<int[]> blackMoveList;
 
     int FPS = 20;
 
@@ -31,7 +35,16 @@ public class GamePanel extends JPanel implements Runnable{
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
+
+        whiteMoveList = whitePieceManager.whitePieceLocations;
+        blackMoveList = blackPieceManager.blackPieceLocations;
+
+        whitePieceManager.setAvailableMoves();
+        blackPieceManager.setAvailableMoves();
+
     }
+
+
 
     public void startGameThread(){
         gameThread = new Thread(this);

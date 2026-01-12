@@ -3,14 +3,17 @@ package Chess.Piece;
 import Chess.Game.GamePanel;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class BlackPieceManager {
 
     GamePanel gp;
-    public int numPawns = 10,
+    public int numPawns = 8,
             numRooks = 2,
             numKnights = 2,
             numBishops = 2;
+
+    private int pieceNumber = 0;
 
     private final Pawn[] pawnArray = new Pawn[numPawns];
     private final Rook[] rookArray = new Rook[numRooks];
@@ -19,18 +22,12 @@ public class BlackPieceManager {
     private King king;
     private Queen queen;
 
+    public ArrayList<int[]> blackPieceLocations = new ArrayList<>();
+
 
     public BlackPieceManager(GamePanel gp){
         this.gp = gp;
         initialisePieces();
-    }
-
-    private void initialisePieces(){
-        initialisePawns();
-        initialiseRooks();
-        initialiseKnights();
-        initialiseBishops();
-        initialiseRoyals();
     }
 
     public void updatePieces(){
@@ -54,29 +51,63 @@ public class BlackPieceManager {
         queen.update();
     }
 
+    private void initialisePieces(){
+        initialisePawns();
+        initialiseRooks();
+        initialiseKnights();
+        initialiseBishops();
+        initialiseRoyals();
+    }
+
     private void initialiseRoyals() {
-        king = new King(gp, false, 4, 7);
-        queen = new Queen(gp, false, 3, 7);
+        blackPieceLocations.add(new int[]{4, 7});
+        king = new King(gp, false, 4, 7, pieceNumber);
+        pieceNumber++;
+
+        blackPieceLocations.add(new int[]{3, 7});
+        queen = new Queen(gp, false, 3, 7, pieceNumber);
+        pieceNumber++;
     }
 
     private void initialiseBishops() {
-        bishopArray[0] = new Bishop(gp, false, 2, 7);
-        bishopArray[1] = new Bishop(gp, false, 5, 7);
+        blackPieceLocations.add(new int[] {2, 7});
+        bishopArray[0] = new Bishop(gp, false, 2, 7, pieceNumber);
+        pieceNumber++;
+
+        blackPieceLocations.add(new int[] {5, 7});
+        bishopArray[1] = new Bishop(gp, false, 5, 7, pieceNumber);
+        pieceNumber++;
+
     }
 
     private void initialiseKnights() {
-        knightArray[0] = new Knight(gp, false, 1, 7);
-        knightArray[1] = new Knight(gp, false, 6, 7);
+        blackPieceLocations.add(new int[] {1, 7});
+        knightArray[0] = new Knight(gp, false, 1, 7, pieceNumber);
+        pieceNumber++;
+
+        blackPieceLocations.add(new int[] {6, 7});
+        knightArray[1] = new Knight(gp, false, 6, 7, pieceNumber);
+        pieceNumber++;
+
     }
 
     private void initialiseRooks() {
-        rookArray[0] = new Rook(gp, false, 0, 7);
-        rookArray[1] = new Rook(gp, false, 7, 7);
+        blackPieceLocations.add(new int[] {0, 7});
+        rookArray[0] = new Rook(gp, false, 0, 7, pieceNumber);
+        pieceNumber++;
+
+        blackPieceLocations.add(new int[] {7, 7});
+        rookArray[1] = new Rook(gp, false, 7, 7, pieceNumber);
+        pieceNumber++;
+
     }
 
     private void initialisePawns(){
         for (int i = 0; i < numPawns; i++){
-            pawnArray[i] = new Pawn(gp, false, i, 6);
+            blackPieceLocations.add(new int[] {i, 6});
+            pawnArray[i] = new Pawn(gp, false, i, 6, pieceNumber);
+            pieceNumber++;
+
         }
     }
 
@@ -96,5 +127,27 @@ public class BlackPieceManager {
         king.draw(g2);
         queen.draw(g2);
 
+    }
+
+    public void setAvailableMoves(){
+        for (Pawn pawn : pawnArray){
+            pawn.availableMoves = pawn.getAvailableMoves();
+        }
+
+        for (Rook rook : rookArray){
+            rook.availableMoves = rook.getAvailableMoves();
+        }
+
+        for (Knight knight : knightArray){
+            knight.availableMoves = knight.getAvailableMoves();
+        }
+
+        for (Bishop bishop : bishopArray){
+            bishop.availableMoves = bishop.getAvailableMoves();
+        }
+
+        queen.availableMoves = queen.getAvailableMoves();
+
+        king.availableMoves = king.getAvailableMoves();
     }
 }

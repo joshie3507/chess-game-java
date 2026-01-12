@@ -9,26 +9,84 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Bishop extends Piece {
-    public Bishop(GamePanel gp, boolean isWhite, int tileX, int tileY) {
+    public Bishop(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber) {
         this.gp = gp;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;
+        this.pieceNumber = pieceNumber;
 
         getImage();
-        availableMoves = getAvailableMoves();
     }
 
-    private int[][] getAvailableMoves() {
+    int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
 
-        for (int row = 0; row <= 7; row++) {
-            for (int column = 0; column <= 7; column++) {
-                if (Math.abs(row - tileX) == Math.abs(column - tileY) && !(row == tileX && column == tileY)) {
-                    moves.add(new int[]{row, column});
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+
+        int currentX, currentY;
+        int[] currentMove;
+
+        currentX = tileX + 1;
+        currentY = tileY + 1;
+        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new int[] {currentX, currentY};
+            for (int[] location : teamPieceLocations) {
+                if (Arrays.equals(location, currentMove)) {
+                    break outer;
                 }
             }
+
+            moves.add(currentMove);
+            currentX++;
+            currentY++;
         }
+
+        currentX = tileX + 1;
+        currentY = tileY - 1;
+        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new int[] {currentX, currentY};
+            for (int[] location : teamPieceLocations) {
+                if (Arrays.equals(location, currentMove)) {
+                    break outer;
+                }
+            }
+
+            moves.add(currentMove);
+            currentX++;
+            currentY--;
+        }
+
+        currentX = tileX - 1;
+        currentY = tileY + 1;
+        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new int[] {currentX, currentY};
+            for (int[] location : teamPieceLocations) {
+                if (Arrays.equals(location, currentMove)) {
+                    break outer;
+                }
+            }
+
+            moves.add(currentMove);
+            currentX--;
+            currentY++;
+        }
+
+        currentX = tileX - 1;
+        currentY = tileY - 1;
+        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new int[] {currentX, currentY};
+            for (int[] location : teamPieceLocations) {
+                if (Arrays.equals(location, currentMove)) {
+                    break outer;
+                }
+            }
+
+            moves.add(currentMove);
+            currentX++;
+            currentY++;
+        }
+
 
         int[][] moveArray = new int[moves.size()][2];
 
@@ -54,21 +112,24 @@ public class Bishop extends Piece {
 
 
     public void update() {
-        selected = checkClickedOn();
+        if (isAlive) {
+            selected = checkClickedOn();
 
-        if (selected) {
-            gp.currentlySelected = this;
-        }
+            if (selected) {
+                gp.currentlySelected = this;
+            }
 
-        if (gp.currentlySelected == this) {
-            for (int[] move : availableMoves) {
-                if (Arrays.equals(gp.tileClicked, move)) {
-                    move();
-                    break;
+            if (gp.currentlySelected == this) {
+                for (int[] move : availableMoves) {
+                    if (Arrays.equals(gp.tileClicked, move)) {
+                        move();
+                        break;
+                    }
                 }
             }
         }
     }
+
 
 
     private void move() {
@@ -80,8 +141,9 @@ public class Bishop extends Piece {
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        if (isAlive) {
+            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        }
     }
-
 }
 
