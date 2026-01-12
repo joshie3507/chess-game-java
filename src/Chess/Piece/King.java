@@ -8,133 +8,149 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class King extends Piece{
+public class King extends Piece {
 
-    public King(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber){
-            this.gp = gp;
-            this.isWhite = isWhite;
-            this.tileX = tileX;
-            this.tileY = tileY;
-            this.pieceNumber = pieceNumber;
+    public King(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber) {
+        this.gp = gp;
+        this.isWhite = isWhite;
+        this.tileX = tileX;
+        this.tileY = tileY;
+        this.pieceNumber = pieceNumber;
 
-            getImage();
-        }
+        getImage();
+    }
 
+    /**
+     * method figures out available moves of the king based on the surrounding board
+     *
+     * @return -> array of all available co-ordinates that king can move to
+     */
     int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>();
-        boolean blocked = false;
+        ArrayList<int[]> moves = new ArrayList<>(); // arraylist of currently available tile co-ordinates
+        boolean blocked = false; // is the current tile already occupied
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // locations of all teammates
 
-        int[] currentMove;
+        int[] currentMove; // initialising variable used for determining available moves
 
-        currentMove = new int[] {tileX + 1, tileY};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // can the king move north
+        currentMove = new int[]{tileX + 1, tileY};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
-        blocked = false;
+        blocked = false; // reset variables for next direction
 
-        currentMove = new int[] {tileX + 1, tileY + 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // all movement logic is the same just different variables being incremented / decremented
+
+        //north-east direction
+        currentMove = new int[]{tileX + 1, tileY + 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX, tileY + 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // east direction
+        currentMove = new int[]{tileX, tileY + 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX - 1, tileY + 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        //south-east
+        currentMove = new int[]{tileX - 1, tileY + 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX - 1, tileY};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // south
+        currentMove = new int[]{tileX - 1, tileY};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX - 1, tileY - 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // south-west
+        currentMove = new int[]{tileX - 1, tileY - 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX, tileY - 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // west
+        currentMove = new int[]{tileX, tileY - 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
         blocked = false;
 
-        currentMove = new int[] {tileX + 1, tileY - 1};
-        for (int[] location : teamPieceLocations){
-            if (Arrays.equals(location, currentMove)){
+        // north-west
+        currentMove = new int[]{tileX + 1, tileY - 1};
+        for (int[] location : teamPieceLocations) {
+            if (Arrays.equals(location, currentMove)) {
                 blocked = true;
                 break;
             }
         }
 
-        if (!blocked){
+        if (!blocked) {
             moves.add(currentMove);
         }
-        blocked = false;
+
+        // convert ArrayList to 2D array
 
         int[][] moveArray = new int[moves.size()][2];
 
-        for (int i = 0; i < moves.size(); i++){
+        for (int i = 0; i < moves.size(); i++) {
             moveArray[i][0] = moves.get(i)[0];
             moveArray[i][1] = moves.get(i)[1];
         }
@@ -142,29 +158,48 @@ public class King extends Piece{
         return moveArray;
     }
 
-    private void getImage()  {
-            try {
-                if (isWhite) {
-                    image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/White/White-King.png"));
-                } else {
-                    image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Black/Black-King.png"));
-                }
-            } catch (IOException e){
-                e.printStackTrace();
+    /**
+     * method sets the image to a png in the resource folder
+     */
+    private void getImage() {
+        try {
+            if (isWhite) {
+                image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/White/White-King.png"));
+            } else {
+                image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Black/Black-King.png"));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public void move(){
-            tileX = gp.tileClicked[0];
-            tileY = gp.tileClicked[1];
-            availableMoves = getAvailableMoves();
-            gp.isWhitesTurn = !gp.isWhitesTurn;
-        }
+    /**
+     * changes x and y co-ordinates to new tile
+     */
+    public void move() {
+        tileX = gp.tileClicked[0];
+        tileY = gp.tileClicked[1];
 
-        public void draw(Graphics2D g2){
+        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+
+        availableMoves = getAvailableMoves();
+        gp.isWhitesTurn = !gp.isWhitesTurn;
+    }
+
+    /**
+     * method draws piece if it is alive
+     *
+     * @param g2 -> Graphics2D class used to draw on JFrame
+     */
+    public void draw(Graphics2D g2) {
+        if (isAlive) {
             g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
         }
+    }
 
+    /**
+     * method handles when king is selected
+     */
     public void update() {
         selected = checkClickedOn();
 

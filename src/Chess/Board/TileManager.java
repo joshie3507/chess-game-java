@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class TileManager {
 
     GamePanel gp;
-    public Tile[][] tiles;
+    public Tile[][] tiles; // 2D array of tiles, representing the board to be played on
 
     public TileManager(GamePanel gp){
         this.gp = gp;
@@ -16,16 +16,25 @@ public class TileManager {
         generateTiles();
     }
 
+    /**
+     * method initializes a 2D array of custom Tile class
+     */
     private void generateTiles(){
         for (int row = 0; row < gp.numTiles; row++){
             for (int column = 0; column < gp.numTiles; column++){
 
-                String colour = (row + column) % 2 == 0 ? "#e4d9c8" : "#5e5247";
+                String colour = (row + column) % 2 == 0 ? "#e4d9c8" : "#5e5247"; // alternates between cream and dark brown.  Was originally black and white,
+                                                                                 // but these colours are easier to see
                 tiles[row][column] = new Tile(row, column, colour);
             }
         }
     }
 
+    /**
+     * method draws all tiles on a JFrame
+     *
+     * @param g2 -> Graphics2D class used to draw each tile
+     */
     public void drawTiles(Graphics2D g2){
         for (int row = 0; row < gp.numTiles; row++){
             for (int col = 0; col < gp.numTiles; col++){
@@ -36,10 +45,14 @@ public class TileManager {
         }
     }
 
+    /**
+     * method highlights all tiles from the currently selected piece's available moves
+     *
+     * @param g2 -> Graphics2D class used to draw the highlight over original tile
+     */
     public void highlightTiles(Graphics2D g2){
         if (gp.currentlySelected != null ) {
             for (int[] tile : gp.currentlySelected.availableMoves) {
-                //System.out.print(Arrays.toString(tile) + " ");
                 g2.setColor(Color.decode("#81befd"));
                 g2.fillRect(tile[0]*gp.tileSize, (7 - tile[1])  * gp.tileSize, gp.tileSize, gp.tileSize);
                 g2.setColor(Color.BLACK);

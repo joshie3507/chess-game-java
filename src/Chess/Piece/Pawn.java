@@ -12,23 +12,28 @@ public class Pawn extends Piece{
 
     boolean isFirstMove = true;
 
+    /**
+     * method figures out available moves of the pawn based on board around it
+     *
+     * @return -> array of all available moves
+     */
     int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>();
-        int numMoves = isFirstMove ? 2 : 1;
+        ArrayList<int[]> moves = new ArrayList<>(); // arrayList representing available moves
+        int numMoves = isFirstMove ? 2 : 1; // pawns can move 2 squares forward on their first move
 
-        int[] currentMove;
+        int[] currentMove; // variable used for determining available moves
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // all teammate locations
 
+        // logic is same for black and white, but they move in opposite directions
         if (isWhite) {
             int currentY = tileY + 1, limit = tileY + numMoves;
 
-            outer:
-            while (currentY <= limit) {
+            outer: while (currentY <= limit) {
                 currentMove = new int[]{tileX, currentY};
                 for (int[] location : teamPieceLocations) {
                     if (Arrays.equals(location, currentMove)) {
-                        break outer;
+                        break outer; // don't show any available moves after where the pawn is blocked
                     }
                 }
 
@@ -52,6 +57,7 @@ public class Pawn extends Piece{
             }
         }
 
+        // convert ArrayList to 2D array
         int[][] moveArray = new int[moves.size()][2];
 
         for (int i = 0; i < moves.size(); i++){
@@ -73,6 +79,9 @@ public class Pawn extends Piece{
         getImage();
     }
 
+    /**
+     * method sets the image to a png in the resource folder
+     */
     private void getImage()  {
         try {
             if (isWhite) {
@@ -85,22 +94,34 @@ public class Pawn extends Piece{
         }
     }
 
+    /**
+     * changes x and y co-ordinates to new tile
+     */
     public void move(){
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
         isFirstMove = false;
 
-        availableMoves = getAvailableMoves();
-        gp.isWhitesTurn = !gp.isWhitesTurn;
-
         gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
 
+        availableMoves = getAvailableMoves();
+        gp.isWhitesTurn = !gp.isWhitesTurn;
     }
 
+    /**
+     * method draws piece if it is alive
+     *
+     * @param g2 -> Graphics2D class used to draw on JFrame
+     */
     public void draw(Graphics2D g2){
-        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        if (isAlive) {
+            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        }
     }
 
+    /**
+     * method handles when pawn is selected
+     */
     public void update(){
         selected = checkClickedOn();
 

@@ -8,21 +8,23 @@ import java.util.ArrayList;
 public class BlackPieceManager {
 
     GamePanel gp;
+    // initialising number of each piece
     public int numPawns = 8,
             numRooks = 2,
             numKnights = 2,
             numBishops = 2;
 
+    // counter for how many pieces have been initialised.  Used as an index in pieces and blackPieceLocations
     private int pieceNumber = 0;
 
-    private final Pawn[] pawnArray = new Pawn[numPawns];
-    private final Rook[] rookArray = new Rook[numRooks];
-    private final Knight[] knightArray = new Knight[numKnights];
-    private final Bishop[] bishopArray = new Bishop[numBishops];
-    private King king;
+    private final Pawn[] pawnArray = new Pawn[numPawns]; // array of all pawns
+    private final Rook[] rookArray = new Rook[numRooks]; // array of all rooks
+    private final Knight[] knightArray = new Knight[numKnights]; // array of all knights
+    private final Bishop[] bishopArray = new Bishop[numBishops]; // array of all bishops
+    private King king; // king and queen not in an array as there is only one of each
     private Queen queen;
 
-    public ArrayList<int[]> blackPieceLocations = new ArrayList<>();
+    public ArrayList<int[]> blackPieceLocations = new ArrayList<>(); // arraylist used to store all locations of black pieces
 
 
     public BlackPieceManager(GamePanel gp){
@@ -30,6 +32,10 @@ public class BlackPieceManager {
         initialisePieces();
     }
 
+    /**
+     * method updates all pieces and is called in GamePanel update method
+     * used to encapsulate separate parts of the code
+     */
     public void updatePieces(){
         for (Pawn pawn : pawnArray){
             pawn.update();
@@ -51,6 +57,10 @@ public class BlackPieceManager {
         queen.update();
     }
 
+    /**
+     * method initialises every piece.
+     * calls to separate methods to keep each piece separate and easier to find errors
+     */
     private void initialisePieces(){
         initialisePawns();
         initialiseRooks();
@@ -59,6 +69,9 @@ public class BlackPieceManager {
         initialiseRoyals();
     }
 
+    /**
+     * method initialises king and queen
+     */
     private void initialiseRoyals() {
         blackPieceLocations.add(new int[]{4, 7});
         king = new King(gp, false, 4, 7, pieceNumber);
@@ -69,6 +82,9 @@ public class BlackPieceManager {
         pieceNumber++;
     }
 
+    /**
+     * method initialises bishops
+     */
     private void initialiseBishops() {
         blackPieceLocations.add(new int[] {2, 7});
         bishopArray[0] = new Bishop(gp, false, 2, 7, pieceNumber);
@@ -80,6 +96,9 @@ public class BlackPieceManager {
 
     }
 
+    /**
+     * method initialises knights
+     */
     private void initialiseKnights() {
         blackPieceLocations.add(new int[] {1, 7});
         knightArray[0] = new Knight(gp, false, 1, 7, pieceNumber);
@@ -91,6 +110,9 @@ public class BlackPieceManager {
 
     }
 
+    /**
+     * method initialises rooks
+     */
     private void initialiseRooks() {
         blackPieceLocations.add(new int[] {0, 7});
         rookArray[0] = new Rook(gp, false, 0, 7, pieceNumber);
@@ -102,6 +124,9 @@ public class BlackPieceManager {
 
     }
 
+    /**
+     * method initialises pawns
+     */
     private void initialisePawns(){
         for (int i = 0; i < numPawns; i++){
             blackPieceLocations.add(new int[] {i, 6});
@@ -111,6 +136,11 @@ public class BlackPieceManager {
         }
     }
 
+    /**
+     * method draws all black pieces on the board
+     *
+     * @param g2 -> Graphics2D class draws on JFrame
+     */
     public void drawBlackPieces(Graphics2D g2){
         for (Pawn pawn : pawnArray){
             pawn.draw(g2);
@@ -129,6 +159,9 @@ public class BlackPieceManager {
 
     }
 
+    /**
+     * method updates available moves of all pieces
+     */
     public void setAvailableMoves(){
         for (Pawn pawn : pawnArray){
             pawn.availableMoves = pawn.getAvailableMoves();

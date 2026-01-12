@@ -21,23 +21,27 @@ public class Queen extends Piece{
         getImage();
     }
 
+    /**
+     * method figures out available moves of the queen based on surroundnig board
+     *
+     * @return -> array of all available co-ordinates that queen can move to
+     */
     int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>();
+        ArrayList<int[]> moves = new ArrayList<>(); // ArrayList of available moves
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // teammate locations
 
-        System.out.println();
-
-        int currentX, currentY;
+        int currentX, currentY; // initialising variables used in logic
         int[] currentMove;
 
+        // north-east direction
         currentX = tileX + 1;
         currentY = tileY + 1;
         outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
             currentMove = new int[] {currentX, currentY};
             for (int[] location : teamPieceLocations) {
                 if (Arrays.equals(location, currentMove)) {
-                    break outer;
+                    break outer; // outer while loop breaks so that piece is blocked by other pieces
                 }
             }
 
@@ -47,6 +51,9 @@ public class Queen extends Piece{
             currentY++;
         }
 
+        // logic for movement in the same for all directions, just different values incremented / decremented
+
+        // south-east direction
         currentX = tileX + 1;
         currentY = tileY - 1;
         outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
@@ -62,6 +69,7 @@ public class Queen extends Piece{
             currentY--;
         }
 
+        // north-west
         currentX = tileX - 1;
         currentY = tileY + 1;
         outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
@@ -77,6 +85,7 @@ public class Queen extends Piece{
             currentY++;
         }
 
+        // south-west
         currentX = tileX - 1;
         currentY = tileY - 1;
         outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
@@ -92,6 +101,7 @@ public class Queen extends Piece{
             currentY++;
         }
 
+        // east
         currentX = tileX + 1;
         outer: while (currentX < gp.numTiles){
             currentMove = new int[] {currentX, tileY};
@@ -105,6 +115,7 @@ public class Queen extends Piece{
             currentX++;
         }
 
+        // west
         currentX = tileX - 1;
         outer: while (currentX >= 0){
             currentMove = new int[] {currentX, tileY};
@@ -118,6 +129,7 @@ public class Queen extends Piece{
             currentX--;
         }
 
+        // north
         currentY = tileY + 1;
         outer: while (currentY < gp.numTiles){
             currentMove = new int[] {tileX, currentY};
@@ -131,6 +143,7 @@ public class Queen extends Piece{
             currentY++;
         }
 
+        // south
         currentY = tileY - 1;
         outer: while(currentY >= 0){
             currentMove = new int[] {tileX, currentY};
@@ -145,6 +158,7 @@ public class Queen extends Piece{
         }
 
 
+        // convert ArrayList to 2D array
         int[][] moveArray = new int [moves.size()][2];
         for (int k = 0; k< moves.size(); k++){
             moveArray[k][0] = moves.get(k)[0];
@@ -154,6 +168,9 @@ public class Queen extends Piece{
         return moveArray;
     }
 
+    /**
+     * method sets the image to a png in the resource files
+     */
     private void getImage()  {
         try {
             if (isWhite) {
@@ -166,18 +183,34 @@ public class Queen extends Piece{
         }
     }
 
+    /**
+     * changes x and y co-ordinates to new tile
+     */
     private void move(){
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
+
+        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
 
     }
 
+    /**
+     * draws piece if it is alice
+     *
+     * @param g2 -> Graphics2D class used to draw on JFrame
+     */
     public void draw(Graphics2D g2){
-        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        if (isAlive) {
+            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        }
     }
 
+    /**
+     * method handles when queen is selected
+     */
     public void update() {
         selected = checkClickedOn();
 
@@ -196,9 +229,5 @@ public class Queen extends Piece{
         }
     }
 
-    ArrayList<int[]> getTeamPieces() {
-        ArrayList<int[]> moves = isWhite ? gp.whiteMoveList : gp.blackMoveList;
-        moves.remove(pieceNumber);
-        return moves;
-    }
+
 }

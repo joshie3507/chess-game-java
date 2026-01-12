@@ -11,24 +11,27 @@ import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    public final int screenSize = 800;
-    public final int numTiles = 8;
-    public final int tileSize = screenSize / numTiles;
-    public int[] tileClicked;
-    public Piece currentlySelected = null;
-    public boolean isWhitesTurn = true;
+    public final int screenSize = 800; // screen length and height in pixels - screen is a square
+    public final int numTiles = 8; // number of tiles on the board
+    public final int tileSize = screenSize / numTiles; // the size of each tile in pixels
+    public int[] tileClicked; // the tile that was last clicked by the user
+    public Piece currentlySelected = null; // the piece that was on the last selected tile
+    public boolean isWhitesTurn = true; // used to determine if it is white's or black's turn
 
-    public ArrayList<int[]> whiteMoveList;
-    public ArrayList<int[]> blackMoveList;
+    public ArrayList<int[]> whiteMoveList; // list of all white piece locations
+    public Piece[] whitePieces; // list of all white pieces
 
-    int FPS = 20;
+    public ArrayList<int[]> blackMoveList; // list of all black piece locations
+    public Piece[] blackPieces; // list of all black pieces
+
+    int FPS = 60; // Frames Per Second
 
     Thread gameThread;
 
-    public TileManager tileM = new TileManager(this);
-    WhitePieceManager whitePieceManager = new WhitePieceManager(this);
-    BlackPieceManager blackPieceManager = new BlackPieceManager(this);
-    MouseHandler mouseH = new MouseHandler(this);
+    public TileManager tileM = new TileManager(this); // handles all logic to do with tiles
+    WhitePieceManager whitePieceManager = new WhitePieceManager(this); // handles all logic with white pieces
+    BlackPieceManager blackPieceManager = new BlackPieceManager(this); // handles all logic with black pieces
+    MouseHandler mouseH = new MouseHandler(this); // handles mouse clicks
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenSize, screenSize));
@@ -37,6 +40,8 @@ public class GamePanel extends JPanel implements Runnable{
         this.addMouseListener(mouseH);
 
         whiteMoveList = whitePieceManager.whitePieceLocations;
+        whitePieces = whitePieceManager.pieces;
+
         blackMoveList = blackPieceManager.blackPieceLocations;
 
         whitePieceManager.setAvailableMoves();
@@ -45,41 +50,64 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
 
-
+    /**
+     * method initialises the game thread and starts it
+     */
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * method runs each frame of the game and ensures a maximum of set FPS
+     */
     @Override
     public void run() {
 
-        double drawInterval = (double) 1000000000/FPS;
-        double nextDrawTime = System.nanoTime() + drawInterval;
+
+        double drawInterval = (double) 1000000000/FPS; // set interval between each frame
+        double nextDrawTime = System.nanoTime() + drawInterval; // the exact time when the next frame should be drawn
+
+        boolean isWhiteTurnBefore, isWhiteTurnAfter; // used to determine if the current player has made their turn so each piece's
+                                                     // available moves are only update when a piece is moved
 
         while (gameThread != null){
 
+            isWhiteTurnBefore = isWhitesTurn;
+
             update();
+
+            isWhiteTurnAfter = isWhitesTurn;
+
+            if (isWhiteTurnBefore != isWhiteTurnAfter){
+                whitePieceManager.setAvailableMoves();
+            }
 
             repaint();
 
+            // figure out how long is left until next frame
             double remainingTime = nextDrawTime - System.nanoTime();
 
+            // cap remaining time at 0
             if (remainingTime < 0){
                 remainingTime = 0;
             }
 
+            // sleep until next frame is to be drawn
             try{
                 Thread.sleep( (long) (remainingTime / 1000000));
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
-
+            // calculate when next frame should be drawn
             nextDrawTime += drawInterval;
         }
 
     }
 
+    /**
+     * method runs core game logic, updating all pieces and only allowing pieces to move if it is their turn
+     */
     private void update() {
         tileClicked = getTileClicked();
         if (isWhitesTurn) {
@@ -89,12 +117,22 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
 
+    /**
+     * method checks which tile has been clicked by the mouse
+     *
+     * @return -> the co-ordinates of the tile clicked
+     */
     private int[] getTileClicked() {
         int x = mouseH.xTileClicked;
         int y = mouseH.yTileClicked;
         return new int[] {x, y};
     }
 
+    /**
+     * method draws all pieces and tiles to the screen
+     *
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

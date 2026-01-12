@@ -21,14 +21,20 @@ public class Rook extends Piece{
         getImage();
     }
 
+    /**
+     * method figures out available moves of rook based on board around it
+     *
+     * @return -> array of all available co-ordinate that rook can move to
+     */
     int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>();
+        ArrayList<int[]> moves = new ArrayList<>(); // ArrayList of all available tiles
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // teammate locations
 
-        int currentX, currentY;
+        int currentX, currentY; // variables used in logic
         int[] currentMove;
 
+        // east direction
         currentX = tileX + 1;
         outer: while (currentX < gp.numTiles){
             currentMove = new int[] {currentX, tileY};
@@ -42,6 +48,9 @@ public class Rook extends Piece{
             currentX++;
         }
 
+        // logic for movement in all directions is the same, just different values changed
+
+        // west
         currentX = tileX - 1;
         outer: while (currentX >= 0){
             currentMove = new int[] {currentX, tileY};
@@ -55,6 +64,7 @@ public class Rook extends Piece{
             currentX--;
         }
 
+        // north
         currentY = tileY + 1;
         outer: while (currentY < gp.numTiles){
             currentMove = new int[] {tileX, currentY};
@@ -68,6 +78,7 @@ public class Rook extends Piece{
             currentY++;
         }
 
+        // south
         currentY = tileY - 1;
         outer: while(currentY >= 0){
             currentMove = new int[] {tileX, currentY};
@@ -81,6 +92,7 @@ public class Rook extends Piece{
             currentY--;
         }
 
+        // convert ArrayList to 2D array
         int[][] moveArray = new int[moves.size()][2];
 
         for (int k = 0; k <moves.size(); k++){
@@ -91,6 +103,9 @@ public class Rook extends Piece{
         return moveArray;
     }
 
+    /**
+     * sets image to a png in resource files
+     */
     private void getImage(){
         try {
             if (isWhite) {
@@ -103,10 +118,20 @@ public class Rook extends Piece{
         }
     }
 
+    /**
+     * draws piece if it is alive
+     *
+     * @param g2 -> Graphics2D class used to draw on JFrame
+     */
     public void draw(Graphics2D g2){
-        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        if (isAlive) {
+            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        }
     }
 
+    /**
+     * method handles when rook is selected
+     */
     public void update() {
         selected = checkClickedOn();
 
@@ -126,9 +151,15 @@ public class Rook extends Piece{
 
     }
 
+    /**
+     * changes x and y co-ordinate to new tile
+     */
     private void move(){
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
+
+        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
     }
