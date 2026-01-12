@@ -41,9 +41,9 @@ public class TileManager {
             for (int[] tile : gp.currentlySelected.availableMoves) {
                 //System.out.print(Arrays.toString(tile) + " ");
                 g2.setColor(Color.decode("#81befd"));
-                g2.fillRect(tile[0]*gp.tileSize, (8 - tile[1])  * gp.tileSize, gp.tileSize, gp.tileSize);
+                g2.fillRect(tile[0]*gp.tileSize, (7 - tile[1])  * gp.tileSize, gp.tileSize, gp.tileSize);
                 g2.setColor(Color.BLACK);
-                g2.drawRect(tile[0]*gp.tileSize, (8 - tile[1]) * gp.tileSize, gp.tileSize, gp.tileSize);
+                g2.drawRect(tile[0]*gp.tileSize, (7 - tile[1]) * gp.tileSize, gp.tileSize, gp.tileSize);
             }
         }
     }

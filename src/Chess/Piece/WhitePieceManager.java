@@ -29,6 +29,21 @@ public class WhitePieceManager {
         for (Pawn pawn : pawnArray){
             pawn.update();
         }
+
+        for (Rook rook : rookArray){
+            rook.update();
+        }
+
+        for (Knight knight : knightArray){
+            knight.update();
+        }
+
+        for (Bishop bishop : bishopArray){
+            bishop.update();
+        }
+
+        king.update();
+        queen.update();
     }
 
     private void initialisePieces(){
@@ -40,28 +55,28 @@ public class WhitePieceManager {
     }
 
     private void initialiseRoyals() {
-        king = new King(gp, true, 4, 1);
-        queen = new Queen(gp, true, 3, 1);
+        king = new King(gp, true, 4, 0);
+        queen = new Queen(gp, true, 3, 0);
     }
 
     private void initialiseBishops() {
-        bishopArray[0] = new Bishop(gp, true, 2, 1);
-        bishopArray[1] = new Bishop(gp, true, 5, 1);
+        bishopArray[0] = new Bishop(gp, true, 2, 0);
+        bishopArray[1] = new Bishop(gp, true, 5, 0);
     }
 
     private void initialiseKnights() {
-        knightArray[0] = new Knight(gp, true, 1, 1);
-        knightArray[1] = new Knight(gp, true, 6, 1);
+        knightArray[0] = new Knight(gp, true, 1, 0);
+        knightArray[1] = new Knight(gp, true, 6, 0);
     }
 
     private void initialiseRooks() {
-        rookArray[0] = new Rook(gp, true, 0, 1);
-        rookArray[1] = new Rook(gp, true, 7, 1);
+        rookArray[0] = new Rook(gp, true, 0, 0);
+        rookArray[1] = new Rook(gp, true, 7, 0);
     }
 
     private void initialisePawns(){
         for (int i = 0; i < numPawns; i++){
-            pawnArray[i] = new Pawn(gp, true, i, 2);
+            pawnArray[i] = new Pawn(gp, true, i, 1);
         }
     }
 

@@ -20,7 +20,7 @@ public class MouseHandler implements MouseListener {
         yClicked = e.getY();
 
         xTileClicked = xClicked / gp.tileSize;
-        yTileClicked = 8 - (yClicked / gp.tileSize);
+        yTileClicked = 7 - (yClicked / gp.tileSize);
     }
 
     @Override

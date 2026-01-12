@@ -7,7 +7,6 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Knight extends Piece{
-        GamePanel gp;
 
         public Knight(GamePanel gp, boolean isWhite, int tileX, int tileY){
             this.gp = gp;
@@ -17,10 +16,25 @@ public class Knight extends Piece{
             this.tileX = tileX;
             this.tileY = tileY;
 
+            availableMoves = getAvailableMoves();
+
             getImage();
         }
 
-        private void getImage()  {
+    private int[][] getAvailableMoves() {
+            return new int[][] {
+                    {tileX + 2, tileY + 1},
+                    {tileX + 2, tileY - 1},
+                    {tileX + 1, tileY + 2},
+                    {tileX -1, tileY + 2},
+                    {tileX - 2, tileY + 1},
+                    {tileX - 2, tileY - 1},
+                    {tileX + 1, tileY - 2},
+                    {tileX - 1, tileY - 2}
+            };
+    }
+
+    private void getImage()  {
             try {
                 if (isWhite) {
                     image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/White/White-Knight.png"));
@@ -32,6 +46,14 @@ public class Knight extends Piece{
             }
         }
 
+        public void update(){
+            selected = checkClickedOn();
+
+            if (selected){
+                gp.currentlySelected = this;
+            }
+        }
+
         public void move(){
             tileY+=upMoves;
             if (upMoves == 2){
@@ -40,7 +62,7 @@ public class Knight extends Piece{
         }
 
         public void draw(Graphics2D g2){
-            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
         }
 
     }

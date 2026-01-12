@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 public class Pawn extends Piece{
 
-    GamePanel gp;
-    //public int[][] availableMoves;
     boolean isFirstMove = true;
 
     private int[][] getAvailableMoves() {
@@ -46,7 +44,7 @@ public class Pawn extends Piece{
     }
 
     public void draw(Graphics2D g2){
-        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
     }
 
     public void update(){
@@ -54,12 +52,8 @@ public class Pawn extends Piece{
 
         if (selected){
             gp.currentlySelected = this;
-            System.out.println(tileX + " " + tileY + " | " + Arrays.toString(availableMoves[0]));
+            //System.out.println(tileX + " " + tileY + " | " + Arrays.toString(availableMoves[0]));
         }
-    }
-
-    private boolean checkClickedOn() {
-        return (gp.tileClicked[0] == tileX) && (gp.tileClicked[1] == tileY);
     }
 
 }
