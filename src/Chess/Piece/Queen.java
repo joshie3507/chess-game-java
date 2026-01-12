@@ -27,7 +27,7 @@ public class Queen extends Piece{
 
         for (int row = 0; row < gp.numTiles; row++){
             for (int column = 0; column < gp.numTiles; column++){
-                if (column == tileY || row == tileX || (Math.abs(row - tileX) == Math.abs(column - tileY) && !(row == tileX && column == tileY))){
+                if (column == tileY || row == tileX || (Math.abs(row - tileX) == Math.abs(column - tileY))){
                     moves.add(new int[] {row, column});
                 }
             }

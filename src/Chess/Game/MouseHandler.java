@@ -12,12 +12,11 @@ public class MouseHandler implements MouseListener {
     }
 
     public int xTileClicked, yTileClicked;
-    private int xClicked, yClicked;
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        xClicked = e.getX();
-        yClicked = e.getY();
+        int xClicked = e.getX();
+        int yClicked = e.getY();
 
         xTileClicked = xClicked / gp.tileSize;
         yTileClicked = 7 - (yClicked / gp.tileSize);
