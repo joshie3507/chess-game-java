@@ -13,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenSize = 800;
     public final int numTiles = 8;
     public final int tileSize = screenSize / numTiles;
-    public int[] tileClicked = new int[] {4, 4};
+    public int[] tileClicked = null;
     public Piece currentlySelected = null;
 
     int FPS = 20;

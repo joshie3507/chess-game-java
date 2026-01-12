@@ -41,6 +41,9 @@ public class Pawn extends Piece{
     }
 
     public void move(){
+        tileX = gp.tileClicked[0];
+        tileY = gp.tileClicked[1];
+        availableMoves = getAvailableMoves();
     }
 
     public void draw(Graphics2D g2){
@@ -50,9 +53,17 @@ public class Pawn extends Piece{
     public void update(){
         selected = checkClickedOn();
 
-        if (selected){
+        if (selected) {
             gp.currentlySelected = this;
-            //System.out.println(tileX + " " + tileY + " | " + Arrays.toString(availableMoves[0]));
+        }
+
+        if (gp.currentlySelected == this){
+            for (int[] move : availableMoves){
+                if (Arrays.equals(gp.tileClicked, move)) {
+                    move();
+                    break;
+                }
+            }
         }
     }
 

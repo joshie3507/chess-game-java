@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Rook extends Piece{
 
@@ -58,9 +59,25 @@ public class Rook extends Piece{
     public void update() {
         selected = checkClickedOn();
 
-        if (selected){
+        if (selected) {
             gp.currentlySelected = this;
         }
 
+        if (gp.currentlySelected == this){
+
+            for (int[] move : availableMoves) {
+                if (Arrays.equals(gp.tileClicked, move)) {
+                    move();
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private void move(){
+        tileX = gp.tileClicked[0];
+        tileY = gp.tileClicked[1];
+        availableMoves = getAvailableMoves();
     }
 }

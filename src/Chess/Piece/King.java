@@ -5,6 +5,7 @@ import Chess.Game.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class King extends Piece{
 
@@ -46,10 +47,9 @@ public class King extends Piece{
         }
 
         public void move(){
-            tileY+=upMoves;
-            if (upMoves == 2){
-                upMoves--;
-            }
+            tileX = gp.tileClicked[0];
+            tileY = gp.tileClicked[1];
+            availableMoves = getAvailableMoves();
         }
 
         public void draw(Graphics2D g2){
@@ -59,9 +59,17 @@ public class King extends Piece{
     public void update() {
         selected = checkClickedOn();
 
-        if (selected){
+        if (selected) {
             gp.currentlySelected = this;
+        }
 
+        if (gp.currentlySelected == this){
+            for (int[] move : availableMoves){
+                if (Arrays.equals(gp.tileClicked, move)) {
+                    move();
+                    break;
+                }
+            }
         }
     }
 }
