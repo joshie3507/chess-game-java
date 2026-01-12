@@ -15,6 +15,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int tileSize = screenSize / numTiles;
     public int[] tileClicked = null;
     public Piece currentlySelected = null;
+    public boolean isWhitesTurn = true;
 
     int FPS = 20;
 
@@ -68,8 +69,11 @@ public class GamePanel extends JPanel implements Runnable{
 
     private void update() {
         tileClicked = getTileClicked();
-        whitePieceManager.updatePieces();
-        blackPieceManager.updatePieces();
+        if (isWhitesTurn) {
+            whitePieceManager.updatePieces();
+        } else {
+            blackPieceManager.updatePieces();
+        }
     }
 
     private int[] getTileClicked() {

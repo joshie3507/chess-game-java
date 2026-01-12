@@ -20,4 +20,6 @@ public class Piece {
     boolean checkClickedOn() {
         return (gp.tileClicked[0] == tileX) && (gp.tileClicked[1] == tileY);
     }
+
+
 }

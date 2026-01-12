@@ -59,6 +59,8 @@ public class Queen extends Piece{
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
         availableMoves = getAvailableMoves();
+        gp.isWhitesTurn = !gp.isWhitesTurn;
+
     }
 
     public void draw(Graphics2D g2){
