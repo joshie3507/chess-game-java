@@ -26,11 +26,12 @@ public class Knight extends Piece {
      *
      * @return -> array of all available co-ordinates that knight can move to
      */
+    @Override
     int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>(); // ArrayList of currently available moves
         boolean blocked = false; // is the current tile already occupied
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // locations of teammates
+        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // locations of teammates
 
         int[] currentMove; // initialising variable for determining available moves
 
@@ -178,6 +179,7 @@ public class Knight extends Piece {
     /**
      * method handles when knight is selected
      */
+    @Override
     public void update() {
         selected = checkClickedOn();
 
@@ -202,7 +204,7 @@ public class Knight extends Piece {
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
 
-        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -214,6 +216,7 @@ public class Knight extends Piece {
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
+    @Override
     public void draw(Graphics2D g2) {
 
         if (isAlive) {

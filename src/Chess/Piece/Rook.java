@@ -26,10 +26,11 @@ public class Rook extends Piece{
      *
      * @return -> array of all available co-ordinate that rook can move to
      */
+    @Override
     int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>(); // ArrayList of all available tiles
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // teammate locations
+        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // teammate locations
 
         int currentX, currentY; // variables used in logic
         int[] currentMove;
@@ -123,6 +124,7 @@ public class Rook extends Piece{
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
+    @Override
     public void draw(Graphics2D g2){
         if (isAlive) {
             g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
@@ -132,6 +134,7 @@ public class Rook extends Piece{
     /**
      * method handles when rook is selected
      */
+    @Override
     public void update() {
         selected = checkClickedOn();
 
@@ -158,7 +161,7 @@ public class Rook extends Piece{
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
 
-        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;

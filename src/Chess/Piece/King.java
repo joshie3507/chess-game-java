@@ -25,11 +25,12 @@ public class King extends Piece {
      *
      * @return -> array of all available co-ordinates that king can move to
      */
+    @Override
     int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>(); // arraylist of currently available tile co-ordinates
         boolean blocked = false; // is the current tile already occupied
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // locations of all teammates
+        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // locations of all teammates
 
         int[] currentMove; // initialising variable used for determining available moves
 
@@ -180,7 +181,7 @@ public class King extends Piece {
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
 
-        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -191,6 +192,7 @@ public class King extends Piece {
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
+    @Override
     public void draw(Graphics2D g2) {
         if (isAlive) {
             g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
@@ -200,6 +202,7 @@ public class King extends Piece {
     /**
      * method handles when king is selected
      */
+    @Override
     public void update() {
         selected = checkClickedOn();
 

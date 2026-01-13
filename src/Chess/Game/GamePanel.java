@@ -18,10 +18,10 @@ public class GamePanel extends JPanel implements Runnable{
     public Piece currentlySelected = null; // the piece that was on the last selected tile
     public boolean isWhitesTurn = true; // used to determine if it is white's or black's turn
 
-    public ArrayList<int[]> whiteMoveList; // list of all white piece locations
+    public ArrayList<int[]> whiteLocations; // list of all white piece locations
     public Piece[] whitePieces; // list of all white pieces
 
-    public ArrayList<int[]> blackMoveList; // list of all black piece locations
+    public ArrayList<int[]> blackLocations; // list of all black piece locations
     public Piece[] blackPieces; // list of all black pieces
 
     int FPS = 60; // Frames Per Second
@@ -39,14 +39,24 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
 
-        whiteMoveList = whitePieceManager.whitePieceLocations;
         whitePieces = whitePieceManager.pieces;
+        blackPieces = blackPieceManager.pieces;
 
-        blackMoveList = blackPieceManager.blackPieceLocations;
+        whiteLocations = getLocations(whitePieces);
+        blackLocations = getLocations(blackPieces);
 
         whitePieceManager.setAvailableMoves();
         blackPieceManager.setAvailableMoves();
 
+    }
+
+    private ArrayList<int[]> getLocations(Piece[] pieces) {
+        ArrayList<int[]> locations = new ArrayList<>();
+        for (Piece piece : pieces) {
+            locations.add(new int[]{piece.tileX, piece.tileY});
+        }
+
+        return locations;
     }
 
 

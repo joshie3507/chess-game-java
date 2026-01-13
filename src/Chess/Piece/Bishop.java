@@ -24,10 +24,11 @@ public class Bishop extends Piece {
      *
      * @return -> array of all available co-ordinates that bishop can move to
      */
+    @Override
     int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>(); // arraylist of currently available moves
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // locations of all pieces on the same team as the bishop
+        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // locations of all pieces on the same team as the bishop
 
         int currentX, currentY; // initialising variables used for determining available move
         int[] currentMove;
@@ -128,6 +129,7 @@ public class Bishop extends Piece {
     /**
      * method handles when bishop is selected
      */
+    @Override
     public void update() {
         if (isAlive) {
             selected = checkClickedOn();
@@ -152,7 +154,7 @@ public class Bishop extends Piece {
      * method checks if bishop took an opponent piece on last move
      */
     private void checkOpponentPieceTaken() {
-        opponentLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList;
+        opponentLocations = isWhite ? gp.whiteLocations : gp.blackLocations;
         opponentPieces = isWhite ? gp.whitePieces : gp.blackPieces;
 
         for (int i = 0; i < opponentLocations.size(); i++){
@@ -171,7 +173,7 @@ public class Bishop extends Piece {
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
 
-        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
         availableMoves = getAvailableMoves();
 
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -183,6 +185,7 @@ public class Bishop extends Piece {
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
+    @Override
     public void draw(Graphics2D g2) {
         if (isAlive) {
             g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);

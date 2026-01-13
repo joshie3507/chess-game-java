@@ -2,11 +2,12 @@ package Chess.Piece;
 
 import Chess.Game.GamePanel;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 // parent class for all pieces.  Initialised variables used in all child classes
-public class Piece {
+public abstract class Piece {
     GamePanel gp;
 
     public BufferedImage image;
@@ -33,4 +34,9 @@ public class Piece {
     }
 
 
+    public abstract void update();
+
+    public abstract void draw(Graphics2D g2);
+
+    abstract int[][] getAvailableMoves();
 }

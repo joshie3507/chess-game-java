@@ -17,13 +17,14 @@ public class Pawn extends Piece{
      *
      * @return -> array of all available moves
      */
+    @Override
     int[][] getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>(); // arrayList representing available moves
         int numMoves = isFirstMove ? 2 : 1; // pawns can move 2 squares forward on their first move
 
         int[] currentMove; // variable used for determining available moves
 
-        teamPieceLocations = isWhite ? gp.whiteMoveList : gp.blackMoveList; // all teammate locations
+        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // all teammate locations
 
         // logic is same for black and white, but they move in opposite directions
         if (isWhite) {
@@ -102,7 +103,7 @@ public class Pawn extends Piece{
         tileY = gp.tileClicked[1];
         isFirstMove = false;
 
-        gp.whiteMoveList.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -113,6 +114,7 @@ public class Pawn extends Piece{
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
+    @Override
     public void draw(Graphics2D g2){
         if (isAlive) {
             g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
@@ -122,6 +124,7 @@ public class Pawn extends Piece{
     /**
      * method handles when pawn is selected
      */
+    @Override
     public void update(){
         selected = checkClickedOn();
 
