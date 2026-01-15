@@ -32,7 +32,9 @@ public class BlackPieceManager {
      */
     public void updatePieces(){
         for (Piece piece : pieces){
-            piece.update();
+            if (piece != null) {
+                piece.update();
+            }
         }
     }
 
@@ -113,7 +115,9 @@ public class BlackPieceManager {
      */
     public void drawBlackPieces(Graphics2D g2){
         for ( Piece piece : pieces){
-            piece.draw(g2);
+            if (piece !=null) {
+                piece.draw(g2);
+            }
         }
 
     }

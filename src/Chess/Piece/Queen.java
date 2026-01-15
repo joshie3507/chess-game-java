@@ -22,7 +22,7 @@ public class Queen extends Piece{
     }
 
     /**
-     * method figures out available moves of the queen based on surroundnig board
+     * method figures out available moves of the queen based on surrounding board
      *
      * @return -> array of all available co-ordinates that queen can move to
      */
@@ -98,8 +98,8 @@ public class Queen extends Piece{
             }
 
             moves.add(currentMove);
-            currentX++;
-            currentY++;
+            currentX--;
+            currentY--;
         }
 
         // east
@@ -194,6 +194,7 @@ public class Queen extends Piece{
         gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
 
         availableMoves = getAvailableMoves();
+
         gp.isWhitesTurn = !gp.isWhitesTurn;
 
     }
@@ -204,9 +205,22 @@ public class Queen extends Piece{
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
     @Override
-    public void draw(Graphics2D g2){
-        if (isAlive) {
-            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+    public void draw(Graphics2D g2) {
+        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+    }
+
+    /**
+     * method checks if pawn took an opponent piece on last move
+     */
+    private void checkOpponentPieceTaken() {
+        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
+        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
+
+        for (int i = 0; i < opponentLocations.size(); i++){
+            if (opponentPieces[i] != null && Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) ) {
+                opponentPieces[i] = null; // "kills" opponent piece
+                break;
+            }
         }
     }
 
@@ -219,13 +233,15 @@ public class Queen extends Piece{
 
         if (selected) {
             gp.currentlySelected = this;
-
         }
+
 
         if (gp.currentlySelected == this){
             for (int[] move : availableMoves) {
                 if (Arrays.equals(gp.tileClicked, move)) {
                     move();
+                    checkOpponentPieceTaken();
+                    gp.currentlySelected = null;
                     break;
                 }
             }

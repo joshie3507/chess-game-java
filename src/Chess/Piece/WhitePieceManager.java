@@ -31,7 +31,9 @@ public class WhitePieceManager {
      */
     public void updatePieces(){
         for (Piece piece : pieces){
-            piece.update();
+            if (piece != null) {
+                piece.update();
+            }
         }
 
     }
@@ -113,7 +115,9 @@ public class WhitePieceManager {
      */
     public void drawWhitePieces(Graphics2D g2){
         for (Piece piece : pieces){
-            piece.draw(g2);
+            if (piece != null) {
+                piece.draw(g2);
+            }
         }
 
     }
@@ -121,11 +125,12 @@ public class WhitePieceManager {
     /**
      * method updates available moves of all pieces
      */
-    public void setAvailableMoves(){
-        for (Piece piece : pieces){
-            piece.availableMoves = piece.getAvailableMoves();
+    public void setAvailableMoves() {
+        for (Piece piece : pieces) {
+            if (piece != null) {
+                piece.availableMoves = piece.getAvailableMoves();
+            }
         }
-
     }
 
 }

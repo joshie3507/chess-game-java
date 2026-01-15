@@ -191,8 +191,25 @@ public class Knight extends Piece {
             for (int[] move : availableMoves) {
                 if (Arrays.equals(gp.tileClicked, move)) {
                     move();
+                    checkOpponentPieceTaken();
+                    gp.currentlySelected = null;
                     break;
                 }
+            }
+        }
+    }
+
+    /**
+     * method checks if knight took an opponent piece on last move
+     */
+    private void checkOpponentPieceTaken() {
+        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
+        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
+
+        for (int i = 0; i < opponentLocations.size(); i++){
+            if (opponentPieces[i] != null && Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) ) {
+                opponentPieces[i] = null; // "kills" opponent piece
+                break;
             }
         }
     }
@@ -204,7 +221,7 @@ public class Knight extends Piece {
         tileX = gp.tileClicked[0];
         tileY = gp.tileClicked[1];
 
-        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
+        gp.whiteLocations.set(pieceNumber, new int[]{tileX, tileY});
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -219,9 +236,8 @@ public class Knight extends Piece {
     @Override
     public void draw(Graphics2D g2) {
 
-        if (isAlive) {
-            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
-        }
+        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
+
     }
 
 }

@@ -188,15 +188,28 @@ public class King extends Piece {
     }
 
     /**
+     * method checks if king took an opponent piece on last move
+     */
+    private void checkOpponentPieceTaken() {
+        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
+        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
+
+        for (int i = 0; i < opponentLocations.size(); i++){
+            if (opponentPieces[i] != null && Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) ) {
+                opponentPieces[i] = null; // "kills" opponent piece
+                break;
+            }
+        }
+    }
+
+    /**
      * method draws piece if it is alive
      *
      * @param g2 -> Graphics2D class used to draw on JFrame
      */
     @Override
     public void draw(Graphics2D g2) {
-        if (isAlive) {
-            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
-        }
+        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
     }
 
     /**
@@ -214,6 +227,8 @@ public class King extends Piece {
             for (int[] move : availableMoves){
                 if (Arrays.equals(gp.tileClicked, move)) {
                     move();
+                    checkOpponentPieceTaken();
+                    gp.currentlySelected = null;
                     break;
                 }
             }

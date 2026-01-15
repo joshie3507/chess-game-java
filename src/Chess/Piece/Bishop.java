@@ -19,6 +19,8 @@ public class Bishop extends Piece {
         getImage();
     }
 
+
+
     /**
      * method figures out available moves of the bishop based on the surrounding board
      *
@@ -36,8 +38,9 @@ public class Bishop extends Piece {
         // available moves in the north-east direction
         currentX = tileX + 1;
         currentY = tileY + 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
+        outer:
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0) {
+            currentMove = new int[]{currentX, currentY};
             for (int[] location : teamPieceLocations) {
                 if (Arrays.equals(location, currentMove)) {
                     break outer; // outer while loop breaks so that the piece is blocked when it encounters a teammate
@@ -53,8 +56,9 @@ public class Bishop extends Piece {
         //south-east direction
         currentX = tileX + 1;
         currentY = tileY - 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
+        outer:
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0) {
+            currentMove = new int[]{currentX, currentY};
             for (int[] location : teamPieceLocations) {
                 if (Arrays.equals(location, currentMove)) {
                     break outer;
@@ -69,8 +73,9 @@ public class Bishop extends Piece {
         // north-west direction
         currentX = tileX - 1;
         currentY = tileY + 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
+        outer:
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0) {
+            currentMove = new int[]{currentX, currentY};
             for (int[] location : teamPieceLocations) {
                 if (Arrays.equals(location, currentMove)) {
                     break outer;
@@ -85,8 +90,9 @@ public class Bishop extends Piece {
         // south-west
         currentX = tileX - 1;
         currentY = tileY - 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
+        outer:
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0) {
+            currentMove = new int[]{currentX, currentY};
             for (int[] location : teamPieceLocations) {
                 if (Arrays.equals(location, currentMove)) {
                     break outer;
@@ -131,39 +137,41 @@ public class Bishop extends Piece {
      */
     @Override
     public void update() {
-        if (isAlive) {
-            selected = checkClickedOn();
+        selected = checkClickedOn();
 
-            if (selected) {
-                gp.currentlySelected = this;
-            }
+        if (selected) {
+            gp.currentlySelected = this;
+        }
 
-            if (gp.currentlySelected == this) {
-                for (int[] move : availableMoves) {
-                    if (Arrays.equals(gp.tileClicked, move)) {
-                        move();
-                        checkOpponentPieceTaken();
-                        break;
-                    }
+        if (gp.currentlySelected == this) {
+            for (int[] move : availableMoves) {
+                if (Arrays.equals(gp.tileClicked, move)) {
+                    move();
+                    checkOpponentPieceTaken();
+                    gp.currentlySelected = null;
+                    break;
                 }
             }
         }
     }
 
+
     /**
      * method checks if bishop took an opponent piece on last move
      */
     private void checkOpponentPieceTaken() {
-        opponentLocations = isWhite ? gp.whiteLocations : gp.blackLocations;
-        opponentPieces = isWhite ? gp.whitePieces : gp.blackPieces;
+        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
+        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
 
         for (int i = 0; i < opponentLocations.size(); i++){
-            if (Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) && opponentPieces[i].isAlive){
-                opponentPieces[i].isAlive = false; // "kills" opponent piece
+            if (Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) && opponentPieces[i] != null) {
+                opponentPieces[i] = null; // "kills" opponent piece
                 break;
             }
         }
     }
+
+
 
 
     /**
@@ -187,9 +195,7 @@ public class Bishop extends Piece {
      */
     @Override
     public void draw(Graphics2D g2) {
-        if (isAlive) {
-            g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
-        }
+        g2.drawImage(image, tileX * gp.tileSize, (gp.numTiles - tileY - 1) * gp.tileSize, gp.tileSize, gp.tileSize, null);
     }
 }
 

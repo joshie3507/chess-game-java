@@ -91,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable{
 
             if (isWhiteTurnBefore != isWhiteTurnAfter){
                 whitePieceManager.setAvailableMoves();
+
             }
 
             repaint();
@@ -125,6 +126,7 @@ public class GamePanel extends JPanel implements Runnable{
         } else {
             blackPieceManager.updatePieces();
         }
+
     }
 
     /**
@@ -133,8 +135,8 @@ public class GamePanel extends JPanel implements Runnable{
      * @return -> the co-ordinates of the tile clicked
      */
     private int[] getTileClicked() {
-        int x = mouseH.xTileClicked;
-        int y = mouseH.yTileClicked;
+        int x = mouseH.xClicked / tileSize;
+        int y = 7 - (mouseH.yClicked / tileSize);
         return new int[] {x, y};
     }
 
