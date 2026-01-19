@@ -72,7 +72,8 @@ public class WhitePieceManager {
      * method initialises king and queen
      */
     private void initialiseRoyals() {
-        pieces.put(new Position(4, 0), new King(gp, true, 4, 0));
+        gp.whiteKing = new King(gp, true, 4, 0);
+        pieces.put(new Position(4, 0), gp.whiteKing);
 
         pieces.put(new Position(3, 0), new Queen(gp, true, 3, 0));
     }

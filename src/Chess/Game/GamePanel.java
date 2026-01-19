@@ -18,8 +18,12 @@ public class GamePanel extends JPanel implements Runnable{
     public final int tileSize = screenSize / numTiles; // the size of each tile in pixels
     public int[] tileClicked; // the tile that was last clicked by the user
     public Piece currentlySelected = null; // the piece that was on the last selected tile
+    public Piece checkingPiece = null;
+    public King whiteKing = null;
+    public King blackKing = null;
     public boolean isWhitesTurn = true; // used to determine if it is white's or black's turn
 
+    public CheckState checkState; // which colour is currently in check
 
     int FPS = 60; // Frames Per Second
 
@@ -38,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addMouseListener(mouseH);
+        this.checkState = CheckState.NONE;
 
         whitePieces = whitePieceManager.pieces;
         blackPieces = blackPieceManager.pieces;
@@ -57,7 +62,6 @@ public class GamePanel extends JPanel implements Runnable{
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
-        System.out.println("got here");
     }
 
     /**
@@ -121,6 +125,7 @@ public class GamePanel extends JPanel implements Runnable{
             blackPieceManager.updatePieces();
         }
 
+        System.out.println(checkState);
     }
 
     /**

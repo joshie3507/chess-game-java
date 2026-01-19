@@ -1,5 +1,6 @@
 package Chess.Piece;
 
+import Chess.Game.CheckState;
 import Chess.Game.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -22,70 +23,143 @@ public class Pawn extends Piece{
         int numMoves = isFirstMove ? 2 : 1; // pawns can move 2 squares forward on their first move
 
         Position currentMove; // variable used for determining available moves
-
-        teamPieces = isWhite ? gp.whitePieces : gp.blackPieces; // all teammate locations
-        opponents = isWhite ? gp.blackPieces : gp.whitePieces;
-
         Piece teamPieceAtLocation, oppAtLocation;
 
         // logic is same for black and white, but they move in opposite directions
         if (isWhite) {
             int currentY = tileY + 1, limit = tileY + numMoves;
 
-            while (currentY <= limit) {
-                currentMove = new Position(tileX, currentY);
+            switch (gp.checkState) {
+                case NONE:
+                    while (currentY <= limit) {
+                        currentMove = new Position(tileX, currentY);
 
-                teamPieceAtLocation = teamPieces.get(currentMove);
-                oppAtLocation = opponents.get(currentMove);
+                        teamPieceAtLocation = teamPieces.get(currentMove);
+                        oppAtLocation = opponents.get(currentMove);
 
-                if (teamPieceAtLocation != null || oppAtLocation != null){
+                        if (teamPieceAtLocation != null || oppAtLocation != null) {
+                            break;
+                        }
+
+                        moves.add(new Move(currentMove, false));
+                        currentY++;
+                    }
+
+                    currentMove = new Position(tileX + 1, tileY + 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null) {
+                        moves.add(new Move(currentMove, true));
+                    }
+
+                    currentMove = new Position(tileX - 1, tileY + 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null) {
+                        moves.add(new Move(currentMove, true));
+                    }
                     break;
-                }
 
-                moves.add(new Move(currentMove, false));
-                currentY++;
+                case BLACK:
+                case WHITE:
+                    while (currentY <= limit) {
+                        currentMove = new Position(tileX, currentY);
+
+                        teamPieceAtLocation = teamPieces.get(currentMove);
+                        oppAtLocation = opponents.get(currentMove);
+
+                        if (teamPieceAtLocation != null || oppAtLocation != null) {
+                            break;
+                        } else {
+                            for (Move move : gp.checkingPiece.availableMoves){
+                                if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                                    moves.add(new Move(currentMove, false));
+                                }
+                            }
+                        }
+
+                        currentY++;
+                    }
+
+                    currentMove = new Position(tileX + 1, tileY + 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation instanceof King) {
+                        moves.add(new Move(currentMove, true));
+                    }
+
+                    currentMove = new Position(tileX - 1, tileY + 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation instanceof King ) {
+                        moves.add(new Move(currentMove, true));
+                    }
+                    break;
+
             }
-
-            currentMove = new Position(tileX + 1, tileY + 1);
-            oppAtLocation = opponents.get(currentMove);
-            if (oppAtLocation != null){
-                moves.add(new Move(currentMove, true));
-            }
-
-            currentMove = new Position(tileX - 1, tileY + 1);
-            oppAtLocation = opponents.get(currentMove);
-            if (oppAtLocation != null){
-                moves.add(new Move(currentMove, true));
-            }
-
         } else {
             int currentY = tileY - 1, limit = tileY - numMoves;
+            switch (gp.checkState) {
+                case NONE:
+                    while (currentY >= limit) {
+                        currentMove = new Position(tileX, currentY);
 
-            while (currentY >= limit) {
-                currentMove = new Position(tileX, currentY);
+                        teamPieceAtLocation = teamPieces.get(currentMove);
+                        oppAtLocation = opponents.get(currentMove);
 
-                teamPieceAtLocation = teamPieces.get(currentMove);
-                oppAtLocation = opponents.get(currentMove);
+                        if (teamPieceAtLocation != null || oppAtLocation != null) {
+                            break;
+                        }
 
-                if (teamPieceAtLocation != null || oppAtLocation != null){
+                        moves.add(new Move(currentMove, false));
+                        currentY--;
+                    }
+
+                    currentMove = new Position(tileX + 1, tileY - 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null) {
+                        moves.add(new Move(currentMove, true));
+                    }
+
+                    currentMove = new Position(tileX - 1, tileY - 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null) {
+                        moves.add(new Move(currentMove, true));
+                    }
+
                     break;
-                }
+                case BLACK:
+                case WHITE:
+                    while (currentY >= limit) {
+                        currentMove = new Position(tileX, currentY);
 
-                moves.add(new Move(currentMove, false));
-                currentY--;
+                        teamPieceAtLocation = teamPieces.get(currentMove);
+                        oppAtLocation = opponents.get(currentMove);
+
+                        if (teamPieceAtLocation != null || oppAtLocation != null) {
+                            break;
+                        } else {
+                            for (Move move : gp.checkingPiece.availableMoves){
+                                if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                                    moves.add(new Move(currentMove, false));
+                                }
+                            }
+                        }
+
+                        currentY--;
+                    }
+
+                    currentMove = new Position(tileX + 1, tileY - 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null && oppAtLocation == gp.checkingPiece) {
+                        moves.add(new Move(currentMove, true));
+                    }
+
+                    currentMove = new Position(tileX - 1, tileY - 1);
+                    oppAtLocation = opponents.get(currentMove);
+                    if (oppAtLocation != null && oppAtLocation == gp.checkingPiece) {
+                        moves.add(new Move(currentMove, true));
+                    }
+                    break;
+
             }
 
-            currentMove = new Position(tileX + 1, tileY - 1);
-            oppAtLocation = opponents.get(currentMove);
-            if (oppAtLocation != null){
-                moves.add(new Move(currentMove, true));
-            }
-
-            currentMove = new Position(tileX - 1, tileY - 1);
-            oppAtLocation = opponents.get(currentMove);
-            if (oppAtLocation != null){
-                moves.add(new Move(currentMove, true));
-            }
 
         }
 
@@ -100,6 +174,38 @@ public class Pawn extends Piece{
 
     }
 
+    /**
+     * gets the list of squares the checking piece must travel to get to the king
+     * @return
+     */
+    private ArrayList<Position> getSquaresBetween() {
+        ArrayList<Position> squaresBetween = new ArrayList<>();
+
+        if (gp.checkingPiece instanceof Bishop ||
+                gp.checkingPiece instanceof Rook ||
+                gp.checkingPiece instanceof  Queen) {
+
+            King oppKing = isWhite ? gp.blackKing : gp.whiteKing;
+
+            int dx = Integer.signum(gp.checkingPiece.position.x - oppKing.position.x);
+            int dy = Integer.signum(gp.checkingPiece.position.y - oppKing.position.y);
+
+
+            int x = oppKing.position.x + dx;
+            int y = oppKing.position.y + dy;
+
+
+            while (x != gp.checkingPiece.position.x || y != gp.checkingPiece.position.y) {
+                squaresBetween.add(new Position(x, y));
+                x += dx;
+                y += dy;
+            }
+
+
+        }
+        return squaresBetween;
+    }
+
     public Pawn(GamePanel gp, boolean isWhite, int tileX, int tileY){
         this.gp = gp;
         this.isWhite = isWhite;
@@ -109,6 +215,18 @@ public class Pawn extends Piece{
         this.position = new Position(tileX, tileY);
 
         getImage();
+    }
+
+    public void checkForCheck() {
+
+        King oppKing = isWhite ? gp.blackKing : gp.whiteKing;
+
+        for (Move availableMove : availableMoves) {
+            if (availableMove.position.equals(oppKing.position)) {
+                gp.checkState = isWhite ? CheckState.BLACK : CheckState.WHITE;
+                break;
+            }
+        }
     }
 
     public void initPiece(){
@@ -140,9 +258,6 @@ public class Pawn extends Piece{
         if (isWhite) {
             gp.whitePieceManager.piecesToRemove.add(new Position(tileX, tileY));
             gp.whitePieceManager.piecesToAdd.put(clicked, this);
-            tileX = clicked.x;
-            tileY = clicked.y;
-            updatePosition(tileX, tileY);
         } else {
             gp.blackPieceManager.piecesToRemove.add(new Position(tileX, tileY));
             gp.blackPieceManager.piecesToAdd.put(clicked, this);
@@ -154,6 +269,8 @@ public class Pawn extends Piece{
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
+
+        checkForCheck();
     }
 
     /**

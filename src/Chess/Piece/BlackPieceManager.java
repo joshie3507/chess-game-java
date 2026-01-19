@@ -69,7 +69,8 @@ public class BlackPieceManager {
      * method initialises king and queen
      */
     private void initialiseRoyals() {
-        pieces.put(new Position(4, 7), new King(gp, false, 4, 7));
+        gp.blackKing = new King(gp, false, 4, 7);
+        pieces.put(new Position(4, 7), gp.blackKing);
 
         pieces.put(new Position(3, 7), new Queen(gp, false, 3, 7));
     }
