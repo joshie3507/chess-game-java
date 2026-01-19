@@ -2,24 +2,18 @@ package Chess.Piece;
 
 import Chess.Game.GamePanel;
 
+import javax.management.AttributeList;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BlackPieceManager {
 
+    public ArrayList<Position> piecesToRemove = new ArrayList<>();
+    public HashMap<Position, Piece>  piecesToAdd = new HashMap<>();
     GamePanel gp;
-    // initialising number of each piece
-    public int numPawns = 8,
-            numRooks = 2,
-            numKnights = 2,
-            numBishops = 2;
 
-    // counter for how many pieces have been initialised.  Used as an index in pieces and blackPieceLocations
-    private int pieceNumber = 0;
-
-
-
-    public Piece[] pieces = new Piece[numPawns + numRooks + numBishops + numKnights + 2]; // array of all pieces
+    public HashMap<Position, Piece> pieces = new HashMap<>();
 
     public BlackPieceManager(GamePanel gp){
         this.gp = gp;
@@ -27,15 +21,36 @@ public class BlackPieceManager {
     }
 
     /**
+     * method sets hashMaps in each piece that represents the black and white pieces
+     */
+    public void initPieceTeams(){
+        for (Piece piece : pieces.values()){
+            piece.initPiece();
+        }
+    }
+
+    /**
      * method updates all pieces and is called in GamePanel update method
      * used to encapsulate separate parts of the code
      */
     public void updatePieces(){
-        for (Piece piece : pieces){
+
+        for (Piece piece : pieces.values()){
             if (piece != null) {
                 piece.update();
             }
         }
+
+        for (Piece piece : piecesToAdd.values()){
+            pieces.put(piece.getPosition(), piece);
+        }
+
+        for (Position position : piecesToRemove){
+            pieces.remove(position);
+        }
+
+        piecesToRemove.clear();
+        piecesToAdd.clear();
     }
 
     /**
@@ -54,57 +69,44 @@ public class BlackPieceManager {
      * method initialises king and queen
      */
     private void initialiseRoyals() {
-        pieces[pieceNumber] = new King(gp, false, 4, 7, pieceNumber);
-        pieceNumber++;
+        pieces.put(new Position(4, 7), new King(gp, false, 4, 7));
 
-        pieces[pieceNumber] = new Queen(gp, false, 3, 7, pieceNumber);
-        pieceNumber++;
+        pieces.put(new Position(3, 7), new Queen(gp, false, 3, 7));
     }
 
     /**
      * method initialises bishops
      */
     private void initialiseBishops() {
-        pieces[pieceNumber] = new Bishop(gp, false, 2, 7, pieceNumber);
-        pieceNumber++;
+        pieces.put( new Position(2, 7), new Bishop(gp, false, 2, 7));
 
-        pieces[pieceNumber] = new Bishop(gp, false, 5, 7, pieceNumber);
-        pieceNumber++;
-
+        pieces.put(new Position(5, 7), new Bishop(gp, false, 5, 7));
     }
 
     /**
      * method initialises knights
      */
     private void initialiseKnights() {
-        pieces[pieceNumber] = new Knight(gp, false, 1, 7, pieceNumber);
-        pieceNumber++;
+        pieces.put(new Position(1,7), new Knight(gp, false, 1, 7));
 
-        pieces[pieceNumber] = new Knight(gp, false, 6, 7, pieceNumber);
-        pieceNumber++;
-
+        pieces.put(new Position(6, 7), new Knight(gp, false, 6, 7));
     }
 
     /**
      * method initialises rooks
      */
     private void initialiseRooks() {
-        pieces[pieceNumber] = new Rook(gp, false, 0, 7, pieceNumber);
-        pieceNumber++;
+        pieces.put(new Position(0, 7), new Rook(gp, false, 0, 7));
 
-        pieces[pieceNumber] = new Rook(gp, false, 7, 7, pieceNumber);
-        pieceNumber++;
-
+        pieces.put(new Position(7, 7), new Rook(gp, false, 7, 7));
     }
 
     /**
      * method initialises pawns
      */
     private void initialisePawns(){
-        for (int i = 0; i < numPawns; i++){
-            pieces[pieceNumber] = new Pawn(gp, false, i, 6, pieceNumber);
-            pieceNumber++;
-
+        for (int i = 0; i < 8; i++){
+            pieces.put(new Position(i, 6), new Pawn(gp, false, i, 6));
         }
     }
 
@@ -114,7 +116,7 @@ public class BlackPieceManager {
      * @param g2 -> Graphics2D class draws on JFrame
      */
     public void drawBlackPieces(Graphics2D g2){
-        for ( Piece piece : pieces){
+        for (Piece piece : pieces.values()){
             if (piece !=null) {
                 piece.draw(g2);
             }
@@ -126,7 +128,7 @@ public class BlackPieceManager {
      * method updates available moves of all pieces
      */
     public void setAvailableMoves(){
-        for (Piece piece : pieces){
+        for (Piece piece : pieces.values()){
             piece.availableMoves = piece.getAvailableMoves();
         }
     }

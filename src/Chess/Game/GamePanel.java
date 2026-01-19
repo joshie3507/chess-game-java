@@ -8,6 +8,8 @@ import Chess.Piece.WhitePieceManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -18,20 +20,18 @@ public class GamePanel extends JPanel implements Runnable{
     public Piece currentlySelected = null; // the piece that was on the last selected tile
     public boolean isWhitesTurn = true; // used to determine if it is white's or black's turn
 
-    public ArrayList<int[]> whiteLocations; // list of all white piece locations
-    public Piece[] whitePieces; // list of all white pieces
-
-    public ArrayList<int[]> blackLocations; // list of all black piece locations
-    public Piece[] blackPieces; // list of all black pieces
 
     int FPS = 60; // Frames Per Second
 
-    Thread gameThread;
-
     public TileManager tileM = new TileManager(this); // handles all logic to do with tiles
-    WhitePieceManager whitePieceManager = new WhitePieceManager(this); // handles all logic with white pieces
-    BlackPieceManager blackPieceManager = new BlackPieceManager(this); // handles all logic with black pieces
+    public WhitePieceManager whitePieceManager = new WhitePieceManager(this); // handles all logic with white pieces
+    public BlackPieceManager blackPieceManager = new BlackPieceManager(this); // handles all logic with black pieces
     MouseHandler mouseH = new MouseHandler(this); // handles mouse clicks
+
+    public HashMap<Position, Piece> whitePieces;
+    public HashMap<Position, Piece> blackPieces;
+
+    Thread gameThread;
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenSize, screenSize));
@@ -42,21 +42,12 @@ public class GamePanel extends JPanel implements Runnable{
         whitePieces = whitePieceManager.pieces;
         blackPieces = blackPieceManager.pieces;
 
-        whiteLocations = getLocations(whitePieces);
-        blackLocations = getLocations(blackPieces);
+        whitePieceManager.initPieceTeams();
+        blackPieceManager.initPieceTeams();
 
         whitePieceManager.setAvailableMoves();
         blackPieceManager.setAvailableMoves();
 
-    }
-
-    private ArrayList<int[]> getLocations(Piece[] pieces) {
-        ArrayList<int[]> locations = new ArrayList<>();
-        for (Piece piece : pieces) {
-            locations.add(new int[]{piece.tileX, piece.tileY});
-        }
-
-        return locations;
     }
 
 
@@ -66,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
+        System.out.println("got here");
     }
 
     /**
@@ -91,7 +83,7 @@ public class GamePanel extends JPanel implements Runnable{
 
             if (isWhiteTurnBefore != isWhiteTurnAfter){
                 whitePieceManager.setAvailableMoves();
-
+                blackPieceManager.setAvailableMoves();
             }
 
             repaint();
@@ -121,6 +113,8 @@ public class GamePanel extends JPanel implements Runnable{
      */
     private void update() {
         tileClicked = getTileClicked();
+
+
         if (isWhitesTurn) {
             whitePieceManager.updatePieces();
         } else {
@@ -157,7 +151,5 @@ public class GamePanel extends JPanel implements Runnable{
 
         whitePieceManager.drawWhitePieces(g2);
         blackPieceManager.drawBlackPieces(g2);
-
-
     }
 }

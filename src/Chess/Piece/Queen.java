@@ -11,14 +11,20 @@ import java.util.Arrays;
 public class Queen extends Piece{
 
 
-    public Queen(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber){
+    public Queen(GamePanel gp, boolean isWhite, int tileX, int tileY){
         this.gp = gp;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;
-        this.pieceNumber = pieceNumber;
+
+        this.position = new Position(tileX, tileY);
 
         getImage();
+    }
+
+    public void initPiece(){
+        teamPieces = isWhite ? gp.whitePieces : gp.blackPieces;
+        opponents = isWhite ? gp.blackPieces : gp.whitePieces;
     }
 
     /**
@@ -27,26 +33,32 @@ public class Queen extends Piece{
      * @return -> array of all available co-ordinates that queen can move to
      */
     @Override
-    int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>(); // ArrayList of available moves
+    Move[] getAvailableMoves() {
+        ArrayList<Move> moves = new ArrayList<>(); // ArrayList of available moves
 
-        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // teammate locations
+        teamPieces = isWhite ? gp.whitePieces : gp.blackPieces; // teammates
+        opponents = isWhite ? gp.blackPieces : gp.whitePieces; // opponents
 
         int currentX, currentY; // initialising variables used in logic
-        int[] currentMove;
+        Position currentMove;
 
         // north-east direction
         currentX = tileX + 1;
         currentY = tileY + 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer; // outer while loop breaks so that piece is blocked by other pieces
-                }
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new Position(currentX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
 
             currentX++;
             currentY++;
@@ -57,15 +69,20 @@ public class Queen extends Piece{
         // south-east direction
         currentX = tileX + 1;
         currentY = tileY - 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new Position(currentX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentX++;
             currentY--;
         }
@@ -73,15 +90,20 @@ public class Queen extends Piece{
         // north-west
         currentX = tileX - 1;
         currentY = tileY + 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new Position(currentX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentX--;
             currentY++;
         }
@@ -89,81 +111,106 @@ public class Queen extends Piece{
         // south-west
         currentX = tileX - 1;
         currentY = tileY - 1;
-        outer: while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
-            currentMove = new int[] {currentX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentX < gp.numTiles && currentX >= 0 && currentY < gp.numTiles && currentY >= 0){
+            currentMove = new Position(currentX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentX--;
             currentY--;
         }
 
         // east
         currentX = tileX + 1;
-        outer: while (currentX < gp.numTiles){
-            currentMove = new int[] {currentX, tileY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentX < gp.numTiles){
+            currentMove = new Position(currentX, tileY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentX++;
         }
 
         // west
         currentX = tileX - 1;
-        outer: while (currentX >= 0){
-            currentMove = new int[] {currentX, tileY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentX >= 0){
+            currentMove = new Position(currentX, tileY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentX--;
         }
 
         // north
         currentY = tileY + 1;
-        outer: while (currentY < gp.numTiles){
-            currentMove = new int[] {tileX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while (currentY < gp.numTiles){
+            currentMove = new Position( tileX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentY++;
         }
 
         // south
         currentY = tileY - 1;
-        outer: while(currentY >= 0){
-            currentMove = new int[] {tileX, currentY};
-            for (int[] location : teamPieceLocations) {
-                if (Arrays.equals(location, currentMove)) {
-                    break outer;
-                }
+        while(currentY >= 0){
+            currentMove = new Position(tileX, currentY);
+
+            Piece oppPieceAtLocation = opponents.get(currentMove);
+            Piece teamPieceAtLocation = teamPieces.get(currentMove);
+
+            if (oppPieceAtLocation != null) {
+                moves.add(new Move(currentMove, true));
+                break ;
+            } else if (teamPieceAtLocation != null){
+                break;
             }
 
-            moves.add(currentMove);
+            moves.add(new Move(currentMove, false));
             currentY--;
         }
 
 
         // convert ArrayList to 2D array
-        int[][] moveArray = new int [moves.size()][2];
-        for (int k = 0; k< moves.size(); k++){
-            moveArray[k][0] = moves.get(k)[0];
-            moveArray[k][1] = moves.get(k)[1];
+        Move[] moveArray = new Move[moves.size()];
+
+        for (int i = 0; i < moves.size(); i++){
+            moveArray[i] = moves.get(i);
         }
 
         return moveArray;
@@ -187,16 +234,22 @@ public class Queen extends Piece{
     /**
      * changes x and y co-ordinates to new tile
      */
-    private void move(){
-        tileX = gp.tileClicked[0];
-        tileY = gp.tileClicked[1];
+    private void move(Position clicked){
+        checkOpponentPieceTaken(clicked);
+        if (isWhite) {
+            gp.whitePieceManager.piecesToRemove.add(new Position(tileX, tileY));
+            gp.whitePieceManager.piecesToAdd.put(clicked, this);
+        } else {
+            gp.blackPieceManager.piecesToRemove.add(new Position(tileX, tileY));
+            gp.blackPieceManager.piecesToAdd.put(clicked, this);
+        }
 
-        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
+        tileX = clicked.x;
+        tileY = clicked.y;
+        updatePosition(tileX, tileY);
 
         availableMoves = getAvailableMoves();
-
         gp.isWhitesTurn = !gp.isWhitesTurn;
-
     }
 
     /**
@@ -210,17 +263,12 @@ public class Queen extends Piece{
     }
 
     /**
-     * method checks if pawn took an opponent piece on last move
+     * method checks if queen took an opponent piece on last move
      */
-    private void checkOpponentPieceTaken() {
-        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
-        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
-
-        for (int i = 0; i < opponentLocations.size(); i++){
-            if (opponentPieces[i] != null && Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) ) {
-                opponentPieces[i] = null; // "kills" opponent piece
-                break;
-            }
+    public void checkOpponentPieceTaken(Position clicked) {
+        Piece opponent = opponents.get(clicked);
+        if (opponent != null){
+            opponents.remove(clicked);
         }
     }
 
@@ -235,12 +283,13 @@ public class Queen extends Piece{
             gp.currentlySelected = this;
         }
 
-
         if (gp.currentlySelected == this){
-            for (int[] move : availableMoves) {
-                if (Arrays.equals(gp.tileClicked, move)) {
-                    move();
-                    checkOpponentPieceTaken();
+            Position clicked = new Position(gp.tileClicked[0], gp.tileClicked[1]);
+
+            for (Move availableMove : availableMoves){
+                if (clicked.equals( availableMove.position)){
+                    move( clicked );
+
                     gp.currentlySelected = null;
                     break;
                 }
@@ -248,5 +297,7 @@ public class Queen extends Piece{
         }
     }
 
-
+    private void updatePosition(int tileX, int tileY) {
+        position = new Position(tileX, tileY);
+    }
 }

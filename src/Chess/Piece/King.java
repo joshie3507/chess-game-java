@@ -10,14 +10,20 @@ import java.util.Arrays;
 
 public class King extends Piece {
 
-    public King(GamePanel gp, boolean isWhite, int tileX, int tileY, int pieceNumber) {
+    public King(GamePanel gp, boolean isWhite, int tileX, int tileY) {
         this.gp = gp;
         this.isWhite = isWhite;
         this.tileX = tileX;
         this.tileY = tileY;
-        this.pieceNumber = pieceNumber;
+
+        this.position = new Position(tileX, tileY);
 
         getImage();
+    }
+
+    public void initPiece(){
+        teamPieces = isWhite ? gp.whitePieces : gp.blackPieces;
+        opponents = isWhite ? gp.blackPieces : gp.whitePieces;
     }
 
     /**
@@ -26,134 +32,120 @@ public class King extends Piece {
      * @return -> array of all available co-ordinates that king can move to
      */
     @Override
-    int[][] getAvailableMoves() {
-        ArrayList<int[]> moves = new ArrayList<>(); // arraylist of currently available tile co-ordinates
-        boolean blocked = false; // is the current tile already occupied
+    Move[] getAvailableMoves() {
+        ArrayList<Move> moves = new ArrayList<>(); // arraylist of currently available tile co-ordinates
 
-        teamPieceLocations = isWhite ? gp.whiteLocations : gp.blackLocations; // locations of all teammates
+        teamPieces = isWhite ? gp.whitePieces : gp.blackPieces; // teammates
+        opponents = isWhite ? gp.blackPieces : gp.whitePieces; // opponents
 
-        int[] currentMove; // initialising variable used for determining available moves
+        Position currentMove; // initialising variable used for determining available moves
+        Piece teamPieceAtLocation, opponentPieceAtLocation;
+
 
         // can the king move north
-        currentMove = new int[]{tileX + 1, tileY};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX + 1, tileY);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false; // reset variables for next direction
 
         // all movement logic is the same just different variables being incremented / decremented
 
         //north-east direction
-        currentMove = new int[]{tileX + 1, tileY + 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX + 1, tileY + 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         // east direction
-        currentMove = new int[]{tileX, tileY + 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX, tileY + 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         //south-east
-        currentMove = new int[]{tileX - 1, tileY + 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX - 1, tileY + 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         // south
-        currentMove = new int[]{tileX - 1, tileY};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX - 1, tileY);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         // south-west
-        currentMove = new int[]{tileX - 1, tileY - 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX - 1, tileY - 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         // west
-        currentMove = new int[]{tileX, tileY - 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX, tileY - 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
-        blocked = false;
 
         // north-west
-        currentMove = new int[]{tileX + 1, tileY - 1};
-        for (int[] location : teamPieceLocations) {
-            if (Arrays.equals(location, currentMove)) {
-                blocked = true;
-                break;
-            }
-        }
+        currentMove = new Position(tileX + 1, tileY - 1);
 
-        if (!blocked) {
-            moves.add(currentMove);
+        teamPieceAtLocation = teamPieces.get(currentMove);
+        opponentPieceAtLocation = opponents.get(currentMove);
+
+        if (teamPieceAtLocation == null){
+            moves.add(new Move(currentMove, false));
+        } else if (opponentPieceAtLocation != null){
+            moves.add(new Move(currentMove, true));
         }
 
         // convert ArrayList to 2D array
 
-        int[][] moveArray = new int[moves.size()][2];
+        Move[] moveArray = new Move[moves.size()];
 
         for (int i = 0; i < moves.size(); i++) {
-            moveArray[i][0] = moves.get(i)[0];
-            moveArray[i][1] = moves.get(i)[1];
+            moveArray[i] = moves.get(i);
         }
 
         return moveArray;
@@ -177,11 +169,23 @@ public class King extends Piece {
     /**
      * changes x and y co-ordinates to new tile
      */
-    public void move() {
-        tileX = gp.tileClicked[0];
-        tileY = gp.tileClicked[1];
+    public void move(Position clicked) {
+        checkOpponentPieceTaken(clicked);
 
-        gp.whiteLocations.set(pieceNumber, new int[] {tileX, tileY});
+        if (isWhite) {
+            gp.whitePieceManager.piecesToRemove.add(new Position(tileX, tileY));
+            gp.whitePieceManager.piecesToAdd.put(clicked, this);
+            tileX = clicked.x;
+            tileY = clicked.y;
+            updatePosition(tileX, tileY);
+        } else {
+            gp.blackPieceManager.piecesToRemove.add(new Position(tileX, tileY));
+            gp.blackPieceManager.piecesToAdd.put(clicked, this);
+        }
+
+        tileX = clicked.x;
+        tileY = clicked.y;
+        updatePosition(tileX, tileY);
 
         availableMoves = getAvailableMoves();
         gp.isWhitesTurn = !gp.isWhitesTurn;
@@ -190,15 +194,10 @@ public class King extends Piece {
     /**
      * method checks if king took an opponent piece on last move
      */
-    private void checkOpponentPieceTaken() {
-        opponentLocations = isWhite ?  gp.blackLocations : gp.whiteLocations;
-        opponentPieces = isWhite ?  gp.blackPieces: gp.whitePieces;
-
-        for (int i = 0; i < opponentLocations.size(); i++){
-            if (opponentPieces[i] != null && Arrays.equals(opponentLocations.get(i), new int[] {tileX, tileY}) ) {
-                opponentPieces[i] = null; // "kills" opponent piece
-                break;
-            }
+    public void checkOpponentPieceTaken(Position clicked) {
+        Piece opponent = opponents.get(clicked);
+        if (opponent != null){
+            opponents.remove(clicked);
         }
     }
 
@@ -224,15 +223,21 @@ public class King extends Piece {
         }
 
         if (gp.currentlySelected == this){
-            for (int[] move : availableMoves){
-                if (Arrays.equals(gp.tileClicked, move)) {
-                    move();
-                    checkOpponentPieceTaken();
+            Position clicked = new Position(gp.tileClicked[0], gp.tileClicked[1]);
+
+            for (Move availableMove : availableMoves){
+                if (clicked.equals( availableMove.position)){
+                    move( clicked );
+
                     gp.currentlySelected = null;
                     break;
                 }
             }
         }
+    }
+
+    private void updatePosition(int tileX, int tileY) {
+        position = new Position(tileX, tileY);
     }
 }
 
