@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -35,6 +36,9 @@ public class GamePanel extends JPanel implements Runnable{
     public HashMap<Position, Piece> whitePieces;
     public HashMap<Position, Piece> blackPieces;
 
+    public HashSet<Position> possibleWhiteMoves;
+    public HashSet<Position> possibleBlackMoves;
+
     Thread gameThread;
 
     public GamePanel(){
@@ -50,8 +54,13 @@ public class GamePanel extends JPanel implements Runnable{
         whitePieceManager.initPieceTeams();
         blackPieceManager.initPieceTeams();
 
+        possibleWhiteMoves = whitePieceManager.availableMoves;
+        possibleBlackMoves = blackPieceManager.availableMoves;
+
         whitePieceManager.setAvailableMoves();
         blackPieceManager.setAvailableMoves();
+
+
 
     }
 
@@ -86,9 +95,18 @@ public class GamePanel extends JPanel implements Runnable{
             isWhiteTurnAfter = isWhitesTurn;
 
             if (isWhiteTurnBefore != isWhiteTurnAfter){
+
+                if (isWhiteTurnAfter){
+                    possibleWhiteMoves.clear();
+                } else{
+                    possibleBlackMoves.clear();
+                }
+
                 whitePieceManager.setAvailableMoves();
                 blackPieceManager.setAvailableMoves();
             }
+
+
 
             repaint();
 
@@ -125,7 +143,7 @@ public class GamePanel extends JPanel implements Runnable{
             blackPieceManager.updatePieces();
         }
 
-        System.out.println(checkState);
+        //System.out.println(checkState);
     }
 
     /**

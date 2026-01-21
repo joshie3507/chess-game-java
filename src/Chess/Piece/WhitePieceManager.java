@@ -6,6 +6,7 @@ import javax.management.openmbean.TabularData;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class WhitePieceManager {
@@ -16,6 +17,8 @@ public class WhitePieceManager {
     public ArrayList<Position> piecesToRemove = new ArrayList<>();
     public HashMap<Position, Piece>  piecesToAdd = new HashMap<>();
 
+    public HashSet<Position> availableMoves = new HashSet<>();
+
     public HashMap<Position, Piece> pieces = new HashMap<>();
 
     public WhitePieceManager(GamePanel gp){
@@ -23,6 +26,8 @@ public class WhitePieceManager {
         initialisePieces();
     }
 
+    // create hashmap of all available moves for checking checkmate
+    // also create int variable for number of available moves
     /**
      * method sets hashMaps in each piece that represents the black and white pieces
      */

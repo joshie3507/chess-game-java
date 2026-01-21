@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Knight extends Piece {
 
@@ -23,26 +24,36 @@ public class Knight extends Piece {
 
     /**
      * gets the list of squares the checking piece must travel to get to the king
-     * @return
+     * @return -> list of squares checking piece travels through to get to the king
      */
-    private ArrayList<Position> getSquaresBetween() {
-        ArrayList<Position> squaresBetween = new ArrayList<>();
+    private HashSet<Position> getSquaresBetween() {
+        HashSet<Position> squaresBetween = new HashSet<>();
+
+        Piece checkingPiece = gp.checkingPiece;
 
         if (gp.checkingPiece instanceof Bishop ||
                 gp.checkingPiece instanceof Rook ||
                 gp.checkingPiece instanceof  Queen) {
 
-            King oppKing = isWhite ? gp.blackKing : gp.whiteKing;
+            King oppKing = checkingPiece.isWhite ? gp.blackKing : gp.whiteKing;
 
-            int dx = Integer.signum(gp.checkingPiece.position.x - oppKing.position.x);
-            int dy = Integer.signum(gp.checkingPiece.position.y - oppKing.position.y);
+            int kingX = oppKing.position.x;
+            int kingY = oppKing.position.y;
 
+            int checkingX = gp.checkingPiece.position.x;
+            int checkingY = gp.checkingPiece.position.y;
 
-            int x = oppKing.position.x + dx;
-            int y = oppKing.position.y + dy;
+            int dx = Integer.signum(checkingX - kingX);
+            int dy = Integer.signum(checkingY - kingY);
 
+            if (!(checkingX == kingX || checkingY == kingY || Math.abs(checkingX - kingX) == Math.abs(checkingY - kingY))){
+                return squaresBetween;
+            }
 
-            while (x != gp.checkingPiece.position.x || y != gp.checkingPiece.position.y) {
+            int x = kingX + dx;
+            int y = kingY + dy;
+
+            while (x != checkingX && y != checkingY) {
                 squaresBetween.add(new Position(x, y));
                 x += dx;
                 y += dy;
@@ -50,11 +61,14 @@ public class Knight extends Piece {
 
 
         }
+
+
         return squaresBetween;
     }
 
     public void checkForCheck() {
         Position kingPosition = null;
+        boolean foundCheck = false;
 
         for (Position position : opponents.keySet()) {
             if (opponents.get(position) instanceof King) {
@@ -63,10 +77,16 @@ public class Knight extends Piece {
         }
 
         for (Move availableMove : availableMoves) {
-            if (availableMove.position == kingPosition) {
+            if (availableMove.position.equals(kingPosition)) {
                 gp.checkState = isWhite ? CheckState.BLACK : CheckState.WHITE;
+                gp.checkingPiece = this;
+                foundCheck = true;
                 break;
             }
+        }
+
+        if (!foundCheck){
+            gp.checkState = CheckState.NONE;
         }
     }
 
@@ -84,6 +104,8 @@ public class Knight extends Piece {
     Move[] getAvailableMoves() {
         ArrayList<Move> moves = new ArrayList<>(); // ArrayList of currently available moves
 
+        HashSet<Position> teamAvailableMoves = isWhite ? gp.possibleWhiteMoves : gp.possibleBlackMoves;
+
         Position currentMove; // initialising variable for determining available moves
 
         Piece teamPieceAtLocation, opponentPieceAtLocation;
@@ -98,6 +120,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -112,6 +135,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -124,6 +148,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -136,6 +161,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -148,6 +174,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -160,6 +187,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -172,6 +200,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -184,6 +213,7 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
                 } else if (opponentPieceAtLocation != null){
                     moves.add(new Move(currentMove, true));
                 }
@@ -192,7 +222,10 @@ public class Knight extends Piece {
 
             case WHITE:
             case BLACK:
-                // can the knight move north-north-east
+
+                HashSet<Position> squaresBetween = getSquaresBetween();
+
+                // can the knight move north-east-east
                 currentMove = new Position(tileX + 2, tileY + 1);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
@@ -200,8 +233,9 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
@@ -210,7 +244,7 @@ public class Knight extends Piece {
 
                 //all movement logic is the same, just different variables being incremented / decremented
 
-                // north-north-west
+                // south-east-east
                 currentMove = new Position(tileX + 2, tileY - 1);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
@@ -218,15 +252,16 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && squaresBetween.contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
                     moves.add(new Move(currentMove, true));
                 }
 
-                // north-east-east
+                // north-north-east
                 currentMove = new Position(tileX + 1, tileY + 2);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
@@ -234,15 +269,16 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
                     moves.add(new Move(currentMove, true));
                 }
 
-                // south-east-east
+                // north-north-west
                 currentMove = new Position(tileX - 1, tileY + 2);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
@@ -250,40 +286,9 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
-                        }
-                    }
-                } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
-                    moves.add(new Move(currentMove, true));
-                }
-
-                // south-south-east
-                currentMove = new Position(tileX - 2, tileY + 1);
-
-                teamPieceAtLocation = teamPieces.get(currentMove);
-                opponentPieceAtLocation = opponents.get(currentMove);
-
-                if (teamPieceAtLocation == null){
-                    for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
-                            moves.add(new Move(currentMove, false));
-                        }
-                    }
-                } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
-                    moves.add(new Move(currentMove, true));
-                }
-
-                // south-south-west
-                currentMove = new Position(tileX - 2, tileY - 1);
-
-                teamPieceAtLocation = teamPieces.get(currentMove);
-                opponentPieceAtLocation = opponents.get(currentMove);
-
-                if (teamPieceAtLocation == null){
-                    for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
-                            moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
@@ -291,15 +296,17 @@ public class Knight extends Piece {
                 }
 
                 // north-west-west
-                currentMove = new Position(tileX + 1, tileY - 2);
+                currentMove = new Position(tileX - 2, tileY + 1);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
                 opponentPieceAtLocation = opponents.get(currentMove);
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
+                        //System.out.println("Current Position: " + position + " Current Move: " + currentMove + " Checking Piece Move: " + move.position + " " + move.position.equals(currentMove) + " " + getSquaresBetween().contains(move.position));
                         if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
@@ -307,6 +314,42 @@ public class Knight extends Piece {
                 }
 
                 // south-west-west
+                currentMove = new Position(tileX - 2, tileY - 1);
+
+                teamPieceAtLocation = teamPieces.get(currentMove);
+                opponentPieceAtLocation = opponents.get(currentMove);
+
+                if (teamPieceAtLocation == null){
+                    for (Move move : gp.checkingPiece.availableMoves) {
+                        //System.out.println("Current Position: " + position + " Current Move: " + currentMove + " Checking Piece Move: " + move.position + " " + move.position.equals(currentMove) + " " + getSquaresBetween().contains(move.position));
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                            moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+                        }
+                    }
+                } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
+                    moves.add(new Move(currentMove, true));
+                }
+
+                // south-south-east
+                currentMove = new Position(tileX + 1, tileY - 2);
+
+                teamPieceAtLocation = teamPieces.get(currentMove);
+                opponentPieceAtLocation = opponents.get(currentMove);
+
+                if (teamPieceAtLocation == null){
+                    for (Move move : gp.checkingPiece.availableMoves) {
+                        //System.out.println("Current Position: " + position + " Current Move: " + currentMove + " Checking Piece Move: " + move.position + " " + move.position.equals(currentMove) + " " + getSquaresBetween().contains(move.position));
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                            moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+                        }
+                    }
+                } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){
+                    moves.add(new Move(currentMove, true));
+                }
+
+                // south-south-west
                 currentMove = new Position(tileX - 1, tileY - 2);
 
                 teamPieceAtLocation = teamPieces.get(currentMove);
@@ -314,8 +357,10 @@ public class Knight extends Piece {
 
                 if (teamPieceAtLocation == null){
                     for (Move move : gp.checkingPiece.availableMoves) {
+                        //System.out.println("Current Position: " + position + " Current Move: " + currentMove + " Checking Piece Move: " + move.position + " " + move.position.equals(currentMove) + " " + getSquaresBetween().contains(move.position));
                         if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
                 } else if (opponentPieceAtLocation != null && opponentPieceAtLocation == gp.checkingPiece){

@@ -28,6 +28,7 @@ public class Bishop extends Piece {
      */
     public void checkForCheck() {
         Position kingPosition = null;
+        boolean foundCheck = false;
 
         for (Position position : opponents.keySet()) {
             if (opponents.get(position) instanceof King) {
@@ -39,8 +40,13 @@ public class Bishop extends Piece {
             if (availableMove.position.equals(kingPosition)) {
                 gp.checkState = isWhite ? CheckState.BLACK : CheckState.WHITE;
                 gp.checkingPiece = this;
+                foundCheck = true;
                 break;
             }
+        }
+
+        if (!foundCheck){
+            gp.checkState = CheckState.NONE;
         }
     }
 
@@ -57,6 +63,8 @@ public class Bishop extends Piece {
     @Override
     Move[] getAvailableMoves() {
         ArrayList<Move> moves = new ArrayList<>();
+
+        HashSet<Position> teamAvailableMoves = isWhite ? gp.possibleWhiteMoves : gp.possibleBlackMoves;
 
         int currentX, currentY; // initialising variables used in logic
         Position currentMove;
@@ -80,6 +88,7 @@ public class Bishop extends Piece {
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
 
                     currentX++;
                     currentY++;
@@ -104,6 +113,8 @@ public class Bishop extends Piece {
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentX++;
                     currentY--;
                 }
@@ -125,6 +136,8 @@ public class Bishop extends Piece {
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentX--;
                     currentY++;
                 }
@@ -146,6 +159,8 @@ public class Bishop extends Piece {
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentX--;
                     currentY--;
                 }
@@ -155,6 +170,7 @@ public class Bishop extends Piece {
 
             case WHITE:
             case BLACK:
+                HashSet<Position> squaresBetween = getSquaresBetween();
                 // north-east direction
                 currentX = tileX + 1;
                 currentY = tileY + 1;
@@ -172,8 +188,9 @@ public class Bishop extends Piece {
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
 
@@ -200,8 +217,9 @@ public class Bishop extends Piece {
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
 
@@ -226,8 +244,9 @@ public class Bishop extends Piece {
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
 
@@ -252,8 +271,9 @@ public class Bishop extends Piece {
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
                         }
                     }
 
@@ -279,26 +299,36 @@ public class Bishop extends Piece {
 
     /**
      * gets the list of squares the checking piece must travel to get to the king
-     * @return
+     * @return -> list of squares checking piece travels through to get to the king
      */
-    private ArrayList<Position> getSquaresBetween() {
-        ArrayList<Position> squaresBetween = new ArrayList<>();
+    private HashSet<Position> getSquaresBetween() {
+        HashSet<Position> squaresBetween = new HashSet<>();
+
+        Piece checkingPiece = gp.checkingPiece;
 
         if (gp.checkingPiece instanceof Bishop ||
                 gp.checkingPiece instanceof Rook ||
                 gp.checkingPiece instanceof  Queen) {
 
-            King oppKing = isWhite ? gp.blackKing : gp.whiteKing;
+            King oppKing = checkingPiece.isWhite ? gp.blackKing : gp.whiteKing;
 
-            int dx = Integer.signum(gp.checkingPiece.position.x - oppKing.position.x);
-            int dy = Integer.signum(gp.checkingPiece.position.y - oppKing.position.y);
+            int kingX = oppKing.position.x;
+            int kingY = oppKing.position.y;
 
+            int checkingX = gp.checkingPiece.position.x;
+            int checkingY = gp.checkingPiece.position.y;
 
-            int x = oppKing.position.x + dx;
-            int y = oppKing.position.y + dy;
+            int dx = Integer.signum(checkingX - kingX);
+            int dy = Integer.signum(checkingY - kingY);
 
+            if (!(checkingX == kingX || checkingY == kingY || Math.abs(checkingX - kingX) == Math.abs(checkingY - kingY))){
+                return squaresBetween;
+            }
 
-            while (x != gp.checkingPiece.position.x || y != gp.checkingPiece.position.y) {
+            int x = kingX + dx;
+            int y = kingY + dy;
+
+            while (x != checkingX && y != checkingY) {
                 squaresBetween.add(new Position(x, y));
                 x += dx;
                 y += dy;
@@ -306,6 +336,7 @@ public class Bishop extends Piece {
 
 
         }
+
         return squaresBetween;
     }
 

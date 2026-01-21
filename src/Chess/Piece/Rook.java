@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Rook extends Piece{
     public Rook(GamePanel gp, boolean isWhite, int tileX, int tileY){
@@ -22,6 +23,7 @@ public class Rook extends Piece{
 
     public void checkForCheck() {
         Position kingPosition = null;
+        boolean foundCheck = false;
 
         for (Position position : opponents.keySet()) {
             if (opponents.get(position) instanceof King) {
@@ -30,10 +32,16 @@ public class Rook extends Piece{
         }
 
         for (Move availableMove : availableMoves) {
-            if (availableMove.position == kingPosition) {
+            if (availableMove.position.equals(kingPosition)) {
                 gp.checkState = isWhite ? CheckState.BLACK : CheckState.WHITE;
+                gp.checkingPiece = this;
+                foundCheck = true;
                 break;
             }
+        }
+
+        if (!foundCheck){
+            gp.checkState = CheckState.NONE;
         }
     }
 
@@ -50,6 +58,8 @@ public class Rook extends Piece{
     @Override
     Move[] getAvailableMoves() {
         ArrayList<Move> moves = new ArrayList<>(); // ArrayList of all available tiles
+
+        HashSet<Position> teamAvailableMoves = isWhite ? gp.possibleWhiteMoves : gp.possibleBlackMoves;
 
         int currentX, currentY; // variables used in logic
         Position currentMove;
@@ -72,6 +82,8 @@ public class Rook extends Piece{
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentX++;
                 }
 
@@ -93,6 +105,8 @@ public class Rook extends Piece{
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentX--;
                 }
 
@@ -112,6 +126,8 @@ public class Rook extends Piece{
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentY++;
                 }
 
@@ -131,6 +147,8 @@ public class Rook extends Piece{
                     }
 
                     moves.add(new Move(currentMove, false));
+                    teamAvailableMoves.add(currentMove);
+
                     currentY--;
                 }
                 break;
@@ -153,8 +171,10 @@ public class Rook extends Piece{
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+
                         }
                     }
 
@@ -179,8 +199,10 @@ public class Rook extends Piece{
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+
                         }
                     }
 
@@ -203,8 +225,10 @@ public class Rook extends Piece{
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+
                         }
                     }
 
@@ -227,8 +251,10 @@ public class Rook extends Piece{
                     }
 
                     for (Move move : gp.checkingPiece.availableMoves) {
-                        if (move.position.equals(currentMove) && getSquaresBetween().contains(move.position)) {
+                        if (move.position.equals(currentMove) && getSquaresBetween().contains(currentMove)) {
                             moves.add(new Move(currentMove, false));
+                            teamAvailableMoves.add(currentMove);
+
                         }
                     }
 
@@ -248,26 +274,36 @@ public class Rook extends Piece{
 
     /**
      * gets the list of squares the checking piece must travel to get to the king
-     * @return
+     * @return -> returns list of available squares of checking piece
      */
     private ArrayList<Position> getSquaresBetween() {
         ArrayList<Position> squaresBetween = new ArrayList<>();
+
+        Piece checkingPiece = gp.checkingPiece;
 
         if (gp.checkingPiece instanceof Bishop ||
                 gp.checkingPiece instanceof Rook ||
                 gp.checkingPiece instanceof  Queen) {
 
-            King oppKing = isWhite ? gp.blackKing : gp.whiteKing;
+            King oppKing = checkingPiece.isWhite ? gp.blackKing : gp.whiteKing;
 
-            int dx = Integer.signum(gp.checkingPiece.position.x - oppKing.position.x);
-            int dy = Integer.signum(gp.checkingPiece.position.y - oppKing.position.y);
+            int kingX = oppKing.position.x;
+            int kingY = oppKing.position.y;
 
+            int checkingX = gp.checkingPiece.position.x;
+            int checkingY = gp.checkingPiece.position.y;
 
-            int x = oppKing.position.x + dx;
-            int y = oppKing.position.y + dy;
+            int dx = Integer.signum(checkingX - kingX);
+            int dy = Integer.signum(checkingY - kingY);
 
+            if (!(checkingX == kingX || checkingY == kingY || Math.abs(checkingX - kingX) == Math.abs(checkingY - kingY))){
+                return squaresBetween;
+            }
 
-            while (x != gp.checkingPiece.position.x || y != gp.checkingPiece.position.y) {
+            int x = kingX + dx;
+            int y = kingY + dy;
+
+            while (x != checkingX && y != checkingY) {
                 squaresBetween.add(new Position(x, y));
                 x += dx;
                 y += dy;
@@ -275,6 +311,7 @@ public class Rook extends Piece{
 
 
         }
+
         return squaresBetween;
     }
 

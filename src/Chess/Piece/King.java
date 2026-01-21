@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class King extends Piece {
 
@@ -38,19 +39,24 @@ public class King extends Piece {
         teamPieces = isWhite ? gp.whitePieces : gp.blackPieces; // teammates
         opponents = isWhite ? gp.blackPieces : gp.whitePieces; // opponents
 
+        HashSet<Position> teamAvailableMoves = isWhite ? gp.possibleWhiteMoves : gp.possibleBlackMoves;
+        HashSet<Position> opponentTeamMoves = isWhite ? gp.possibleBlackMoves : gp.possibleWhiteMoves;
+
         Position currentMove; // initialising variable used for determining available moves
         Piece teamPieceAtLocation, opponentPieceAtLocation;
 
 
-        // can the king move north
+        // can the king move east
         currentMove = new Position(tileX + 1, tileY);
 
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
-        } else if (opponentPieceAtLocation != null){
+            teamAvailableMoves.add(currentMove);
+        } else if (opponentPieceAtLocation != null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, true));
         }
 
@@ -62,22 +68,24 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }
 
-        // east direction
+        // north direction
         currentMove = new Position(tileX, tileY + 1);
 
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
-            moves.add(new Move(currentMove, false));
-        } else if (opponentPieceAtLocation != null){
+        if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
+        } else if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
+             moves.add(new Move(currentMove, false));
+             teamAvailableMoves.add(currentMove);
         }
 
         //south-east
@@ -86,8 +94,9 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }
@@ -98,8 +107,9 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }
@@ -110,8 +120,9 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }
@@ -122,8 +133,9 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !opponentTeamMoves.contains(currentMove)){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }
@@ -134,8 +146,9 @@ public class King extends Piece {
         teamPieceAtLocation = teamPieces.get(currentMove);
         opponentPieceAtLocation = opponents.get(currentMove);
 
-        if (teamPieceAtLocation == null){
+        if (teamPieceAtLocation == null && !(opponentTeamMoves.contains(currentMove))){
             moves.add(new Move(currentMove, false));
+            teamAvailableMoves.add(currentMove);
         } else if (opponentPieceAtLocation != null){
             moves.add(new Move(currentMove, true));
         }

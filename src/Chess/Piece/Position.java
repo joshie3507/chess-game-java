@@ -14,8 +14,7 @@ public class Position {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Position)) return false;
-        Position o = (Position) obj;
+        if (!(obj instanceof Position o)) return false;
         return x == o.x && y == o.y;
     }
 
@@ -24,4 +23,7 @@ public class Position {
         return Objects.hash(x, y);
     }
 
+    public String toString(){
+        return "Position -> [" + x + ", " + y + "]";
+    }
 }

@@ -6,11 +6,13 @@ import javax.management.AttributeList;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class BlackPieceManager {
 
     public ArrayList<Position> piecesToRemove = new ArrayList<>();
     public HashMap<Position, Piece>  piecesToAdd = new HashMap<>();
+    public HashSet<Position> availableMoves = new HashSet<>();
     GamePanel gp;
 
     public HashMap<Position, Piece> pieces = new HashMap<>();
