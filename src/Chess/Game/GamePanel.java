@@ -7,8 +7,6 @@ import Chess.Piece.WhitePieceManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -25,6 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
     public boolean isWhitesTurn = true; // used to determine if it is white's or black's turn
 
     public CheckState checkState; // which colour is currently in check
+    GameState gameState = GameState.PLAYING;
 
     int FPS = 60; // Frames Per Second
 
@@ -104,6 +103,8 @@ public class GamePanel extends JPanel implements Runnable{
 
                 whitePieceManager.setAvailableMoves();
                 blackPieceManager.setAvailableMoves();
+
+                checkForWinner();
             }
 
 
@@ -146,6 +147,16 @@ public class GamePanel extends JPanel implements Runnable{
         //System.out.println(checkState);
     }
 
+    private void checkForWinner() {
+        if (whitePieceManager.availableMoves.isEmpty() && checkState == CheckState.WHITE){
+            gameState = GameState.BLACK_CHECKMATE;
+        } else if (blackPieceManager.availableMoves.isEmpty() && checkState == CheckState.BLACK) {
+            gameState = GameState.WHITE_CHECKMATE;
+        } else if (whitePieceManager.availableMoves.isEmpty() || blackPieceManager.availableMoves.isEmpty()) {
+            gameState = GameState.STALEMATE;
+        }
+    }
+
     /**
      * method checks which tile has been clicked by the mouse
      *
@@ -168,6 +179,39 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2 = (Graphics2D) g;
 
+        switch (gameState){
+            case PLAYING -> drawGame(g2);
+            case BLACK_CHECKMATE -> drawCheckMate(false, g2);
+            case WHITE_CHECKMATE -> drawCheckMate(true, g2);
+            case STALEMATE -> drawStaleMate(g2);
+
+        }
+    }
+
+    private void drawStaleMate(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 48));
+
+        String message = "Stalemate!";
+
+        int messageWidth = g2.getFontMetrics().stringWidth(message);
+        g2.drawString(message, (screenSize - messageWidth) / 2, screenSize / 2);
+
+    }
+
+    private void drawCheckMate(boolean whiteWins, Graphics2D g2) {
+
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 48));
+
+        String message = whiteWins ? "White wins!" : "Black wins!";
+
+        int messageWidth = g2.getFontMetrics().stringWidth(message);
+        g2.drawString(message, (screenSize - messageWidth) / 2, screenSize / 2);
+
+    }
+
+    private void drawGame(Graphics2D g2) {
         tileM.drawTiles(g2);
 
         tileM.highlightTiles(g2);
